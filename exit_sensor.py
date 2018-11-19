@@ -57,7 +57,7 @@ def simulate():
 
     # A number (remove) of cars have left
     if random.uniform(0, 100) < probs[curr_date.hour] and num_cars >= remove > 0:
-        for i in range(remove):
+        for _ in range(remove):
             # Send exit signal to server (i.e. "-3" - 3 cars left)
             client.send_message_to_server(str(-1))
             print("{} - a car exited".format(curr_date))
