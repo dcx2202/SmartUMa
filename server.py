@@ -36,10 +36,10 @@ def process_socket_message(data, client):
         data = int(data)
 
         # If cars entered then update the number of entries
-        if data > 0 and raspbpi.get_num_cars() < raspbpi.get_num_spaces:
+        if data > 0 and raspbpi.get_num_cars() < raspbpi.get_num_spaces():
             raspbpi.new_entry(data)
             print("{} - a car entered".format(curr_date))
-        elif data < 0 and raspbpi.get_num_cars > 0:  # If cars exited then update the number of exits
+        elif data < 0 and raspbpi.get_num_cars() > 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
             print("{} - a car exited".format(curr_date))
 
