@@ -1,7 +1,7 @@
 import socket
+import raspbpi
 from datetime import datetime
 from threading import Thread
-import raspbpi
 
 # initialize server socket
 server_address = ('10.2.211.51', 6789)
@@ -13,22 +13,15 @@ print('Waiting for sensors to connect...')
 
 # receives messages from client and prints
 def communication_thread_function():
-    printed = False
     while True:
         max_size = 4096
         data, client = server.recvfrom(max_size)
-
-        if not printed and datetime.now().minute == 0:
-            raspbpi.print_data()
-            printed = True
-
-        if datetime.now().minute != 0:
-            printed = False
 
         if data.decode() == 'close':
             print(datetime.now(), '- closing the server at')
             server.shutdown(socket.SHUT_RDWR)
             server.close()
+            raspbpi.print_data()
             break
 
         process_socket_message(data, client)
