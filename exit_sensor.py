@@ -1,6 +1,5 @@
 import datetime as Date
 from threading import Timer
-import raspbpi
 import client
 
 # Global variables
@@ -50,17 +49,16 @@ def simulate():
     global curr_date
 
     curr_date = Date.datetime.now()  # Update the current date
-    num_cars = raspbpi.get_num_cars()   # Get the current number of cars in the lot
 
     # Get a random number of cars that can leave
     remove = random.randint(0, 5)
 
     # A number (remove) of cars have left
-    if random.uniform(0, 100) < probs[curr_date.hour] and num_cars >= remove > 0:
+    if random.uniform(0, 100) < probs[curr_date.hour]:
         for _ in range(remove):
             # Send exit signal to server (i.e. "-3" - 3 cars left)
             client.send_message_to_server(str(-1))
-            print("{} - a car exited".format(curr_date))
+            print("{} - exit sensor sent a signal".format(curr_date))
 
     set_timeout(1, simulate)  # Simulate again 1 second from now
 

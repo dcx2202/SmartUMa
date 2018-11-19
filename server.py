@@ -5,10 +5,10 @@ import raspbpi
 
 # initialize server socket
 server_address = ('10.2.211.51', 6789)
-print(datetime.now(), '- starting the server')
-print('Waiting for sensors to connect...')
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_address)
+print(datetime.now(), '- starting the server')
+print('Waiting for sensors to connect...')
 
 
 # receives messages from client and prints
@@ -35,10 +35,11 @@ def process_socket_message(data, client):
         # data hold the number of cars that entered/exited (positive/negative)
         data = int(data)
 
-        if data > 0:    # If cars entered then update the number of entries
+        # If cars entered then update the number of entries
+        if data > 0 and raspbpi.get_num_cars() < raspbpi.get_num_spaces:
             raspbpi.new_entry(data)
             print("{} - a car entered".format(curr_date))
-        elif data < 0:  # If cars exited then update the number of exits
+        elif data < 0 and raspbpi.get_num_cars > 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
             print("{} - a car exited".format(curr_date))
 
