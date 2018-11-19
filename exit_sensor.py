@@ -18,7 +18,7 @@ def main():
 
     curr_date = Date.datetime.now()
 
-    client.send_message_to_server("exit sensor connected.")
+    client.send_message_to_server("exit sensor connected")
 
     if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
         aux = 60
