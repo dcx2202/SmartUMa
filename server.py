@@ -5,7 +5,7 @@ import raspbpi
 
 # initialize server socket
 server_address = ('10.2.211.51', 6789)
-print('Starting the server at', datetime.now())
+print(datetime.now(), '- starting the server')
 print('Waiting for sensors to connect...')
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_address)
@@ -18,7 +18,7 @@ def communication_thread_function():
         data, client = server.recvfrom(max_size)
 
         if data.decode() == 'close':
-            print('Closing the server at', datetime.now())
+            print(datetime.now(), '- closing the server at')
             server.shutdown(socket.SHUT_RDWR)
             server.close()
             break
@@ -31,23 +31,24 @@ def process_socket_message(data, client):
 
     curr_date = datetime.now()
 
-    try: # If it received an entry/exit signal
-        data = int(data)    # data hold the number of cars that entered/exited (positive/negative)
+    try:  # If it received an entry/exit signal
+        # data hold the number of cars that entered/exited (positive/negative)
+        data = int(data)
 
         if data > 0:    # If cars entered then update the number of entries
             raspbpi.new_entry(data)
-            print("Entrou um carro - {}".format(curr_date))
+            print("{} - a car entered".format(curr_date))
         elif data < 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
-            print("Saiu um carro - {}".format(curr_date))
-
+            print("{} - a car exited".format(curr_date))
 
     except:     # Received a text message (sensor connected, ...)
-        print(data.decode())     # Do something with this
+        print(curr_date + ' - ' + data.decode())     # Do something with this
 
 
 def initialize_communication_thread():
-    communication_thread = Thread(target=communication_thread_function, args=())
+    communication_thread = Thread(
+        target=communication_thread_function, args=())
     communication_thread.start()
     communication_thread.join()
 

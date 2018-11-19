@@ -18,14 +18,15 @@ def main():
 
     curr_date = Date.datetime.now()
 
-    client.send_message_to_server("Entry sensor connected.")
+    client.send_message_to_server("entry sensor connected.")
 
     if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
         aux = 60
     else:
         aux = 120
 
-    set_timeout(aux - 1 - curr_date.second + 0.0, start) # Call start() "aux" seconds from now
+    # Call start() "aux" seconds from now
+    set_timeout(aux - 1 - curr_date.second + 0.0, start)
 
 
 # Schedules a function call "timeout" seconds from now
@@ -52,9 +53,11 @@ def simulate():
     num_cars = raspbpi.get_num_cars()   # Get the current number of cars in the lot
     num_spaces = raspbpi.get_num_spaces()   # Get the total number of spaces
 
-    if random.uniform(0, 100) < probs[curr_date.hour] and num_cars < num_spaces:  # A car has entered
-        client.send_message_to_server("1")  # Send entry signal to server ("1" - 1 car entered)
-        print("Entrou um carro - {}".format(curr_date))
+    # A car has entered
+    if random.uniform(0, 100) < probs[curr_date.hour] and num_cars < num_spaces:
+        # Send entry signal to server ("1" - 1 car entered)
+        client.send_message_to_server("1")
+        print("{} - a car entered".format(curr_date))
 
     set_timeout(1, simulate)    # Simulate again 1 second from now
 

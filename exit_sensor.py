@@ -18,14 +18,15 @@ def main():
 
     curr_date = Date.datetime.now()
 
-    client.send_message_to_server("Exit sensor connected.")
+    client.send_message_to_server("exit sensor connected.")
 
     if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
         aux = 60
     else:
         aux = 120
 
-    set_timeout(aux - 1 - curr_date.second + 0.0, start) # Call start() "aux" seconds from now
+    # Call start() "aux" seconds from now
+    set_timeout(aux - 1 - curr_date.second + 0.0, start)
 
 
 # Schedules a function call "timeout" seconds from now
@@ -51,14 +52,17 @@ def simulate():
     curr_date = Date.datetime.now()  # Update the current date
     num_cars = raspbpi.get_num_cars()   # Get the current number of cars in the lot
 
-    remove = random.randint(0, 5)   # Get a random number of cars that can leave
+    # Get a random number of cars that can leave
+    remove = random.randint(0, 5)
 
-    if random.uniform(0, 100) < probs[curr_date.hour] and num_cars >= remove > 0:   # A number (remove) of cars have left
+    # A number (remove) of cars have left
+    if random.uniform(0, 100) < probs[curr_date.hour] and num_cars >= remove > 0:
         for i in range(remove):
-            client.send_message_to_server(str(-1))  # Send exit signal to server (i.e. "-3" - 3 cars left)
-            print("Saiu um carro - {}".format(curr_date))
+            # Send exit signal to server (i.e. "-3" - 3 cars left)
+            client.send_message_to_server(str(-1))
+            print("{} - a car exited".format(curr_date))
 
-    set_timeout(1, simulate) # Simulate again 1 second from now
+    set_timeout(1, simulate)  # Simulate again 1 second from now
 
 
 if __name__ == "__main__":
