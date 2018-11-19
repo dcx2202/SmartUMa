@@ -13,16 +13,16 @@ print('Waiting for sensors to connect...')
 
 # receives messages from client and prints
 def communication_thread_function():
+    printed = False
     while True:
         max_size = 4096
         data, client = server.recvfrom(max_size)
-        printed = False
 
-        if printed == False and datetime.minute() == 0:
+        if not printed and datetime.now().minute == 0:
             raspbpi.print_data()
             printed = True
 
-        if datetime.minute() != 0:
+        if datetime.now().minute != 0:
             printed = False
 
         if data.decode() == 'close':
