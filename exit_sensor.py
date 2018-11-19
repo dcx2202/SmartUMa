@@ -7,40 +7,20 @@ curr_date = Date.datetime.now()
 
 
 # [Prob. Exiting 00:00 -> 01:00, 01:00 -> 02:00, ...]
-probs = [0.1, 0.1, 0, 0, 0, 0, 0.1, 0.1,
-         0.1, 0.1, 0.1, 0.1, 1.2, 0.5, 0.8, 1,
-         1, 1, 0.5, 0.5, 2.5, 2.5, 3, 9]
+probs = [0.05, 0.05, 0, 0, 0, 0, 0.05, 0.05,
+         0.05, 0.05, 0.05, 0.05, 0.6, 0.25, 0.4,
+         0.5, 0.5, 0.5, 0.25, 0.25, 1.25, 1.25, 1.5, 4.5]
 
 
 def main():
-    global curr_date
-
-    curr_date = Date.datetime.now()
-
     client.send_message_to_server("exit sensor connected")
-
-    if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
-        aux = 60
-    else:
-        aux = 120
-
-    # Call start() "aux" seconds from now
-    set_timeout(aux - 1 - curr_date.second + 0.0, start)
+    simulate()
 
 
 # Schedules a function call "timeout" seconds from now
 def set_timeout(timeout, func):
     t = Timer(timeout, func)
     t.start()
-
-
-def start():
-    global curr_date
-
-    while curr_date.second != 0:  # Waits for a new minute to start
-        curr_date = Date.datetime.now()
-
-    simulate()
 
 
 def simulate():

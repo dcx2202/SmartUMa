@@ -13,19 +13,8 @@ probs = [0, 0, 0, 0, 0, 0.05, 0.15, 1.25,
 
 
 def main():
-    global curr_date
-
-    curr_date = Date.datetime.now()
-
     client.send_message_to_server("entry sensor connected")
-
-    if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
-        aux = 60
-    else:
-        aux = 120
-
-    # Call start() "aux" seconds from now
-    set_timeout(aux - 1 - curr_date.second + 0.0, start)
+    simulate()
 
 
 # Schedules a function call "timeout" seconds from now
@@ -34,20 +23,11 @@ def set_timeout(timeout, func):
     t.start()
 
 
-def start():
-    global curr_date
-
-    while curr_date.second != 0:  # Waits for a new minute to start
-        curr_date = Date.datetime.now()
-
-    simulate()
-
-
 def simulate():
     import random
 
     global curr_date
-
+    print("simulating ", curr_date)
     curr_date = Date.datetime.now()  # Update the current date
 
     # A car has entered
