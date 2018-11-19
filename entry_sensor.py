@@ -1,6 +1,7 @@
 import datetime as Date
 from threading import Timer
 import raspbpi
+import client
 
 # Global variables
 curr_date = Date.datetime.now()
@@ -16,6 +17,8 @@ def main():
     global curr_date
 
     curr_date = Date.datetime.now()
+
+    client.send_message_to_server("Entry sensor connected.")
 
     if curr_date.second <= 56:  # If the a new minute is about to start, wait for the next one
         aux = 60
@@ -42,7 +45,6 @@ def start():
 
 def simulate():
     import random
-    import client
 
     global curr_date
 
@@ -52,7 +54,7 @@ def simulate():
 
     if random.uniform(0, 100) < probs[curr_date.hour] and num_cars < num_spaces:  # A car has entered
         client.send_message_to_server("1")  # Send entry signal to server ("1" - 1 car entered)
-        print("Entrou um carro as ", curr_date.hour, "h", curr_date.minute, "m")
+        print("Entrou um carro - {}".format(curr_date))
 
     set_timeout(1, simulate)    # Simulate again 1 second from now
 

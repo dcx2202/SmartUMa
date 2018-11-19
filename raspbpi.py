@@ -62,6 +62,7 @@ def new_exit(data):
     update_num_cars(-data)  # Update the number of cars
     update_num_spaces()  # Update the number of spaces
 
+    # Display something
     # Do something (update stats, store info, ...)
 
 

@@ -4,7 +4,7 @@ from threading import Thread
 import raspbpi
 
 # initialize server socket
-server_address = ('localhost', 6789)
+server_address = ('10.2.211.51', 6789)
 print('Starting the server at', datetime.now())
 print('Waiting for sensors to connect...')
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -17,7 +17,7 @@ def communication_thread_function():
         max_size = 4096
         data, client = server.recvfrom(max_size)
 
-        if data == 'close':
+        if data.decode() == 'close':
             print('Closing the server at', datetime.now())
             server.shutdown(socket.SHUT_RDWR)
             server.close()
@@ -29,15 +29,21 @@ def communication_thread_function():
 # processes the messages received and updates data variables
 def process_socket_message(data, client):
 
+    curr_date = datetime.now()
+
     try: # If it received an entry/exit signal
         data = int(data)    # data hold the number of cars that entered/exited (positive/negative)
+
         if data > 0:    # If cars entered then update the number of entries
             raspbpi.new_entry(data)
+            print("Entrou um carro - {}".format(curr_date))
         elif data < 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
+            print("Saiu um carro - {}".format(curr_date))
+
 
     except:     # Received a text message (sensor connected, ...)
-        print(data)     # Do something with this
+        print(data.decode())     # Do something with this
 
 
 def initialize_communication_thread():

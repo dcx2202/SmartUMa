@@ -3,10 +3,9 @@ import socket
 from datetime import datetime
 
 # initialize client socket
-server_address = ('localhost', 6789)
+server_address = ('10.2.211.51', 6789)
 print('Starting the client at', datetime.now())
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-# client.sendto(str.encode("sensors connected"), server_address)
 
 
 # sends a message to server
