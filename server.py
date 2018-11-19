@@ -43,7 +43,8 @@ def process_socket_message(data, client):
             print("{} - a car exited".format(curr_date))
 
     except:     # Received a text message (sensor connected, ...)
-        print(curr_date + ' - ' + data.decode())     # Do something with this
+        # Do something with this
+        print(str(curr_date) + ' - ' + str(data.decode()))
 
 
 def initialize_communication_thread():
