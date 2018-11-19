@@ -31,14 +31,13 @@ def process_socket_message(data, client):
 
     try: # If it received an entry/exit signal
         data = int(data)    # data hold the number of cars that entered/exited (positive/negative)
-
         if data > 0:    # If cars entered then update the number of entries
             raspbpi.new_entry(data)
         elif data < 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
 
-    except: # Received a text message (sensor connected, ...)
-        print(data) # Do something with this
+    except:     # Received a text message (sensor connected, ...)
+        print(data)     # Do something with this
 
 
 def initialize_communication_thread():
