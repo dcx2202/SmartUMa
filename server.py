@@ -16,8 +16,14 @@ def communication_thread_function():
     while True:
         max_size = 4096
         data, client = server.recvfrom(max_size)
-        if datetime.minute() == 0:
+        printed = False
+
+        if printed == False and datetime.minute() == 0:
             raspbpi.print_data()
+            printed = True
+
+        if datetime.minute() != 0:
+            printed = False
 
         if data.decode() == 'close':
             print(datetime.now(), '- closing the server at')
