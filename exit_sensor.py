@@ -1,5 +1,5 @@
-import datetime as Date
 from threading import Timer
+import datetime as Date
 import client
 
 # Global variables
@@ -9,7 +9,7 @@ curr_date = Date.datetime.now()
 # [Prob. Exiting 00:00 -> 01:00, 01:00 -> 02:00, ...]
 probs = [0.1, 0.1, 0, 0, 0, 0, 0.1, 0.1,
          0.1, 0.1, 0.1, 0.1, 1.2, 0.5, 0.8,
-         1, 1, 1, 0.5, 0.5, 2.5, 2.5, 3, 9]
+         1, 1, 1, 0.5, 0.5, 2.5, 1, 0.2, 0.1]
 
 
 def main():
@@ -30,11 +30,17 @@ def simulate():
 
     curr_date = Date.datetime.now()  # Update the current date
 
-    # A number (remove) of cars have left
+    # A car has left
     if random.uniform(0, 100) < probs[curr_date.hour]:
-        # Send exit signal to server
-        client.send_message_to_server(str(-1))
-        print("{} - exit sensor sent a signal".format(curr_date))
+        # Send request for number of cars
+        client.send_message_to_server("request_cars")
+        # waits for response
+        response = client.receive_message()
+
+        if int(response) > 0:
+            # Send exit signal to server
+            client.send_message_to_server("-1")
+            print("{} - exit sensor sent a signal".format(curr_date))
 
     set_timeout(1, simulate)  # Simulate again 1 second from now
 

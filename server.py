@@ -4,11 +4,10 @@ from datetime import datetime
 from threading import Thread
 
 # initialize server socket
-# server_address = ('10.2.211.51', 6789)
 server_address = ('localhost', 6789)
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_address)
-print(datetime.now(), '- starting the server')
+print('{} - starting the server'.format(datetime.now()))
 print('Waiting for sensors to connect...')
 
 
@@ -19,13 +18,16 @@ def communication_thread_function():
         data, client = server.recvfrom(max_size)
 
         if data.decode() == 'close':
-            print(datetime.now(), '- closing the server at')
+            print('{} - closing the server'.format(datetime.now()))
             server.shutdown(socket.SHUT_RDWR)
             server.close()
-            raspbpi.print_data()
             break
-
-        process_socket_message(data, client)
+        elif data.decode() == 'print data':
+            raspbpi.print_data()
+        elif data.decode() == "request_cars":
+            server.sendto(str.encode(str(raspbpi.get_num_cars())), client)
+        else:
+            process_socket_message(data, client)
 
 
 # processes the messages received and updates data variables

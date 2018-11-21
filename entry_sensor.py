@@ -1,5 +1,5 @@
-import datetime as Date
 from threading import Timer
+import datetime as Date
 import client
 
 # Global variables
@@ -7,12 +7,8 @@ curr_date = Date.datetime.now()
 
 
 # [Prob. Entering 00:00 -> 01:00, 01:00 -> 02:00, ...]
-'''probs = [0, 0, 0, 0, 0, 0.05, 0.15, 1.25,
-         2, 1.25, 0.3, 0.3, 0.25, 1.5, 1, 0.4,
-         0.25, 0.15, 0.1, 0.1, 0.05, 0.05, 0, 0]'''
-
 probs = [0, 0, 0, 0, 0, 0.05, 0.15, 1.25,
-         2, 1.25, 0.3, 0.3, 1.5, 1, 0.4, 0.2,
+         2, 1.25, 0.3, 0.3, 0.25, 1.5, 1, 0.4,
          0.25, 0.15, 0.1, 0.1, 0.05, 0.05, 0, 0]
 
 
