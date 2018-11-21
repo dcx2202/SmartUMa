@@ -4,7 +4,8 @@ from datetime import datetime
 from threading import Thread
 
 # initialize server socket
-server_address = ('10.2.211.51', 6789)
+# server_address = ('10.2.211.51', 6789)
+server_address = ('localhost', 6789)
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_address)
 print(datetime.now(), '- starting the server')
@@ -29,7 +30,6 @@ def communication_thread_function():
 
 # processes the messages received and updates data variables
 def process_socket_message(data, client):
-
     curr_date = datetime.now()
 
     try:  # If it received an entry/exit signal
