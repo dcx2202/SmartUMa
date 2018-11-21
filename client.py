@@ -3,8 +3,8 @@ import socket
 from datetime import datetime
 
 # initialize client socket
-server_address = ('10.2.211.51', 6789)
-print(datetime.now(), '- starting the client')
+server_address = ('192.168.1.88', 6789)
+print('{} - starting the client'.format(datetime.now()))
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 

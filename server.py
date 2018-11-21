@@ -4,10 +4,10 @@ from datetime import datetime
 from threading import Thread
 
 # initialize server socket
-server_address = ('10.2.211.51', 6789)
+server_address = ('192.168.1.88', 6789)
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_address)
-print(datetime.now(), '- starting the server')
+print('{} - starting the server'.format(datetime.now()))
 print('Waiting for sensors to connect...')
 
 
@@ -23,6 +23,8 @@ def communication_thread_function():
             server.close()
             raspbpi.print_data()
             break
+        elif data.decode() == 'print data':
+            raspbpi.print_data()
 
         process_socket_message(data, client)
 

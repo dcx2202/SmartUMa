@@ -13,11 +13,6 @@ def get_num_cars():
     return int(num_cars)
 
 
-def set_num_cars(num):
-    global num_cars
-    num_cars = num
-
-
 def update_num_cars(num):
     global num_cars
     num_cars += num
@@ -43,6 +38,11 @@ def get_num_exits():
 def update_num_exits(num):
     global num_exits
     num_exits += num
+
+
+def get_spaces():
+    global spaces
+    return spaces
 
 
 def update_num_spaces():
@@ -71,3 +71,5 @@ def print_data():
     print("Num cars:", get_num_cars())
     print("Num entries:", get_num_entries())
     print("Num exits:", get_num_exits())
+    print("Num spaces:", get_spaces())
+
