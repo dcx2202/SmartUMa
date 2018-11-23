@@ -14,8 +14,7 @@ print('Waiting for sensors to connect...')
 # receives messages from client and prints
 def communication_thread_function():
     while True:
-        max_size = 4096
-        data, client = server.recvfrom(max_size)
+        data, client = server.recvfrom(4096)
 
         if data.decode() == 'close':
             print('{} - closing the server'.format(datetime.now()))
