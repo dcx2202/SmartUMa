@@ -5,7 +5,7 @@ mydb = mysql.connect(
     host='localhost',
     user='root',
     passwd='sdpass',
-    database='ENTRY_SENSOR_TAB'
+    database='SMART_UMA_PARKING_SENSORS_DB'
 )
 
 
