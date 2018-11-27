@@ -1,10 +1,12 @@
 import datetime as Date
+import db_manager
 
-num_cars = 0    # TODO - Fazer alguma coisa com isto - Estas variaveis e estatisticas deviam ficar num modulo separado
+num_cars = 0
 num_spaces = 130
 num_entries = 0
 num_exits = 0
-spaces = []  # TODO - Quanto tempo guardamos o historico? Se calhar e mais facil com uma pequena db do que tornar o array muito complexo e arriscar perder tudo se o programa crashar
+spaces = []
+
 for i in range(24):
     spaces.append(0)
 
@@ -53,6 +55,7 @@ def new_entry(data):
     update_num_entries(data)
     update_num_cars(data)  # Update the number of cars
     update_num_spaces()    # Update the number of spaces
+    db_manager.insert_entry_to_database(Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
 
     # Do something (update stats, store info, ...)
 
@@ -61,6 +64,7 @@ def new_exit(data):
     update_num_exits(data)
     update_num_cars(-data)  # Update the number of cars
     update_num_spaces()  # Update the number of spaces
+    db_manager.insert_exit_to_database(Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
 
     # Display something
     # Do something (update stats, store info, ...)

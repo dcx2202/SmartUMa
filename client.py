@@ -2,7 +2,7 @@ import socket
 from datetime import datetime
 
 # initialize client socket
-server_address = ('192.168.1.81', 6789)
+server_address = ('localhost', 6789)
 print('{} - starting the client'.format(datetime.now()))
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
