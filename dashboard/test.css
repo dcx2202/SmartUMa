@@ -1,0 +1,59 @@
+body{
+	background-color: #848484;
+}
+
+.topnav {
+	overflow: hidden;
+	background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+h1.title{
+	text-align: center;
+}
+
+p.subtitle {
+  font: 30px 'Pacifico';
+  text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+img.logo{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:20px;
+}
+
+img.slider{
+	float: left;
+}
+
+div.sumario{
+	border: 5px solid black;
+    padding: 15px;
+	background-color: #D8D8D8;
+	width:1300px;
+	height: 300px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
+}
