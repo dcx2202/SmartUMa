@@ -85,11 +85,11 @@ def get_statistics():
 
 # gets log of the last day from the DB
 def get_last_24h_log_from_database():
-    sql = 'SELECT date, time, num_cars FROM entry_sensor_tab WHERE CONCAT(date, \' \', time) >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'
+    sql = 'SELECT * FROM entry_sensor_tab WHERE CONCAT(date, \' \', time) >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'
     mycursor.execute(sql)
     entry_log = mycursor.fetchall()
 
-    sql = 'SELECT date, time, num_cars FROM exit_sensor_tab WHERE CONCAT(date, \' \', time) >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'
+    sql = 'SELECT * FROM exit_sensor_tab WHERE CONCAT(date, \' \', time) >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'
     mycursor.execute(sql)
     exit_log = mycursor.fetchall()
 
