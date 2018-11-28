@@ -1,5 +1,5 @@
 import mysql.connector as mysql
-from datetime import datetime, timedelta
+from datetime import datetime
 
 num_spaces = 130
 
