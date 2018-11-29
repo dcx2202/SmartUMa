@@ -1,5 +1,6 @@
 import mysql.connector as mysql
 from datetime import datetime
+from flask import jsonify
 
 num_spaces = 130
 
@@ -108,7 +109,7 @@ def get_last_24h_log_from_database():
         "exits": json_data_2
     }
 
-    return json_data
+    return jsonify(json_data)
 
 
 # gets entire log from the DB
@@ -136,4 +137,4 @@ def get_full_log_from_database():
         "exits": json_data_2
     }
 
-    return json_data
+    return jsonify(json_data)
