@@ -57,4 +57,4 @@ api.add_resource(AllTimeHistory, '/all_time_history')
 
 
 if __name__ == '__main__':
-    app.run(debug=False. host='192.168.1.156') #change host ip if raspberry is on a different network
+    app.run(debug=False, host='192.168.1.156') #change host ip if raspberry is on a different network
