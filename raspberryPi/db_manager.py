@@ -1,4 +1,5 @@
 import mysql.connector as mysql
+import json
 from datetime import datetime
 
 num_spaces = 130
@@ -89,11 +90,26 @@ def get_last_24h_log_from_database():
     mycursor.execute(sql)
     entry_log = mycursor.fetchall()
 
+    row_headers = [x[0] for x in mycursor.description]
+    json_data_1 = []
+    for row in entry_log:
+        json_data_1.append(dict(zip(row_headers, row)))
+
     sql = 'SELECT * FROM exit_sensor_tab WHERE CONCAT(date, \' \', time) >= DATE_SUB(NOW(), INTERVAL 24 HOUR)'
     mycursor.execute(sql)
     exit_log = mycursor.fetchall()
 
-    return (entry_log, exit_log)
+    row_headers = [x[0] for x in mycursor.description]
+    json_data_2 = []
+    for row in exit_log:
+        json_data_2.append(dict(zip(row_headers, row)))
+
+    json_data = {
+        "entries": json_data_1,
+        "exits": json_data_2
+    }
+
+    return json.dumps(json_data)
 
 
 # gets entire log from the DB
@@ -102,8 +118,23 @@ def get_full_log_from_database():
     mycursor.execute(sql)
     entry_log = mycursor.fetchall()
 
+    row_headers = [x[0] for x in mycursor.description]
+    json_data_1 = []
+    for row in entry_log:
+        json_data_1.append(dict(zip(row_headers, row)))
+
     sql = 'SELECT * FROM exit_sensor_tab'
     mycursor.execute(sql)
     exit_log = mycursor.fetchall()
 
-    return (entry_log, exit_log)
+    row_headers = [x[0] for x in mycursor.description]
+    json_data_2 = []
+    for row in exit_log:
+        json_data_2.append(dict(zip(row_headers, row)))
+
+    json_data = {
+        "entries": json_data_1,
+        "exits": json_data_2
+    }
+
+    return json.dumps(json_data)
