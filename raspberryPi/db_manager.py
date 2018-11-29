@@ -1,5 +1,4 @@
 import mysql.connector as mysql
-import json
 from datetime import datetime
 
 num_spaces = 130
@@ -109,7 +108,7 @@ def get_last_24h_log_from_database():
         "exits": json_data_2
     }
 
-    return json.dumps(json_data)
+    return json_data
 
 
 # gets entire log from the DB
@@ -137,4 +136,4 @@ def get_full_log_from_database():
         "exits": json_data_2
     }
 
-    return json.dumps(json_data)
+    return json_data
