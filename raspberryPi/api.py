@@ -9,42 +9,42 @@ api = Api(app)
 
 class NumberOfCarsParked(Resource):
     def get(self):
-        response = db_manager.get_num_cars_parked_from_db()
+        response = jsonify(db_manager.get_num_cars_parked_from_db())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class NumberOfEntriesInTheLastHour(Resource):
     def get(self):
-        response = db_manager.get_num_entries_last_hour_from_db()
+        response = jsonify(db_manager.get_num_entries_last_hour_from_db())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class NumberOfExitsInTheLastHour(Resource):
     def get(self):
-        response = db_manager.get_num_exits_last_hour_from_db()
+        response = jsonify(db_manager.get_num_exits_last_hour_from_db())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class NumberOfSpaces(Resource):
     def get(self):
-        response = raspbpi.get_num_spaces()
+        response = jsonify(raspbpi.get_num_spaces())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class NumberOfFreeSpaces(Resource):
     def get(self):
-        response = db_manager.get_num_free_spaces_from_db()
+        response = jsonify(db_manager.get_num_free_spaces_from_db())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class Statistics(Resource):
     def get(self):
-        response = raspbpi.get_statistics()
+        response = jsonify(raspbpi.get_statistics())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
@@ -74,5 +74,5 @@ api.add_resource(AllTimeHistory, '/all_time_history')
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port='80')
+    app.run(debug=False, host='0.0.0.0', port='25000')
 
