@@ -1,18 +1,35 @@
 import mysql.connector as mysql
 from datetime import datetime
 from flask import jsonify
+from threading import Timer
 
 num_spaces = 130
 
-# connect to database
-mydb = mysql.connect(
+
+# connects to the database and schedules another reconection one hour from now
+def connect_to_db():
+    global mydb
+    global mycursor
+    
+    try:
+        mydb.close()
+        print("Refreshing database connection - {}".format(datetime.now()))
+    except:
+        pass
+    
+    mydb = mysql.connect(
     host='localhost',
     user='root',
     passwd='sdpass',
     database='smart_uma_parking_sensors_db'
-)
+    )
 
-mycursor = mydb.cursor()
+    mycursor = mydb.cursor()
+    t = Timer(3600, connect_to_db)
+    t.start()
+
+
+connect_to_db()
 
 
 # inserts a new entry to the respective table in the DB
