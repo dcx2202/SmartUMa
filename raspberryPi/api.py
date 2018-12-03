@@ -9,6 +9,8 @@ api = Api(app)
 
 
 # Helper functions
+
+# Calculates the average number of cars parked today in the active hours (05h:00m -> 22h:00m) until now
 def calculate_average_number_cars_parked_today():
     spaces = get_number_cars_by_hour()
     sum = 0
@@ -28,6 +30,7 @@ def calculate_average_number_cars_parked_today():
         return sum / 17
 
 
+# Returns the number of cars parked today at the end of each hour
 def get_number_cars_by_hour():
     # get full last 24 hours log
     last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
@@ -118,6 +121,7 @@ def get_number_cars_by_hour():
     return spaces
 
 
+# Returns the number of entries today until now
 def get_number_of_entries_today():
     # get full last 24 hours log
     last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
@@ -130,6 +134,7 @@ def get_number_of_entries_today():
     return len(last24hlog['entries'])
 
 
+# Returns the number of exits today until now
 def get_number_of_exits_today():
     # get full last 24 hours log
     last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
@@ -142,21 +147,27 @@ def get_number_of_exits_today():
     return len(last24hlog['exits'])
 
 
+# Returns the busiest hours today until now
 def get_busiest_hours_today():
+    # get the number of cars parked at the end of each hour
     spaces = get_number_cars_by_hour()
     busiest_hours = []
-    max = max(spaces)
+    
+    # find the highest number of cars parked at any hour
+    max_cars = max(spaces)
 
-    for i in spaces:
-        if spaces[i] == max:
+    for i in range(0, len(spaces)):
+        if spaces[i] == max_cars:
+            # if this hour's number of cars parked equals the max then add it as one of the busiest
             busiest_hours.append(i)
 
     return busiest_hours
 
 
+# Used in a sort function to sort a list of events by date
 def get_event_datetime(elem):
-    entry_date = elem['date'].split('-')
-    entry_time = elem['time'].split(':')
+    entry_date = elem['event_info']['date'].split('-')
+    entry_time = elem['event_info']['time'].split(':')
     event_datetime = datetime.datetime(int(entry_date[0]),
                                        int(entry_date[1]),
                                        int(entry_date[2]),
@@ -168,9 +179,20 @@ def get_event_datetime(elem):
     return event_datetime
 
 
+# Returns the last 8 events (entries and or exits), each with a description and a time of occurence
 def get_activity_log():
     # get full last 24 hours log
     last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    
+    # get only today's entries
+    for i in range(len(last24hlog['entries']) - 1, -1, -1):
+        if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['entries'].pop(i)
+    
+    # get only today's exits
+    for i in range(len(last24hlog['exits']) - 1, -1, -1):
+        if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['exits'].pop(i)
 
     # declare variables
     events = []
@@ -179,8 +201,8 @@ def get_activity_log():
 
     # get last 8 entries and exits
     for i in range(0, 8):
-        entries.append({"event_info": last24hlog['entries'][len(last24hlog) - 1 - i], "event_type": "entry"})
-        exits.append({"event_info": last24hlog['exits'][len(last24hlog) - 1 - i], "event_type": "exit"})
+        entries.append({"event_info": last24hlog['entries'][len(last24hlog['entries']) - 1 - i], "event_type": "entry"})
+        exits.append({"event_info": last24hlog['exits'][len(last24hlog['exits']) - 1 - i], "event_type": "exit"})
 
     # join them
     temp_events = entries + exits
@@ -193,7 +215,7 @@ def get_activity_log():
         sorted_events.pop(0)
 
     # for each event get the data we want and add it to the final list of events
-    for i in range(5):
+    for i in range(8):
         # create event datetime object
         event_date = sorted_events[i]['event_info']['date'].split('-')
         event_time = sorted_events[i]['event_info']['time'].split(':')
@@ -214,9 +236,11 @@ def get_activity_log():
         else: # if it is an exit event the string says so too
             events.append({"event": "A car exited the park", "time": time_str})
 
-    return events
+    # return the reversed events (first position is the most recent event)
+    return events[::-1]
 
 
+# Returns a string describing how long ago an event happened
 def get_event_string(entry_datetime):
     timedelta = datetime.datetime.now() - entry_datetime
     entry_time = timedelta.__str__().split(':')
@@ -236,10 +260,12 @@ def get_event_string(entry_datetime):
 
 
 # Request handling
+
+# These are called when a request for the path they serve is received
 class NumberOfCarsParked(Resource):
-    def get(self):
-        response = jsonify(db_manager.get_num_cars_parked_from_db())
-        response.headers.add("Access-Control-Allow-Origin", "*")
+    def get(self): # Flask maps the type of http request to the defined methods in each class, in this case GET
+        response = jsonify(db_manager.get_num_cars_parked_from_db()) # get the number of cars parked from the database and jsonify it
+        response.headers.add("Access-Control-Allow-Origin", "*") # Add an header to the response allowing CORS from any origin
         return response
 
 
@@ -319,9 +345,8 @@ class ActivityLog(Resource):
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
-class Statistics(Resource):
+class MainDataPackage(Resource):
     def get(self):
-        # response = jsonify(raspbpi.get_statistics())
         response = jsonify({"Number of cars parked": db_manager.get_num_cars_parked_from_db(),
                             "Number of free spaces": db_manager.get_num_free_spaces_from_db(),
                             "Number of spaces": raspbpi.get_num_spaces(),
@@ -355,27 +380,27 @@ class AllTimeHistory(Resource):
 
 class ApiHelp(Resource):
     def get(self):
-        response = "Available API paths: \n\n"
-        response += "Number of cars parked: /number_of_cars_parked\n"
-        response += "Number of cars parked today hourly: /number_of_cars_parked_today_hourly\n"
-        response += "Number of entries in the last hour: /number_of_entries_in_the_last_hour\n"
-        response += "Number of exits in the last hour: /number_of_exits_in_the_last_hour\n"
-        response += "Number of entries today: /number_of_entries_today\n"
-        response += "Number of exits today: /number_of_exits_today\n"
-        response += "Number of spaces: /number_of_spaces\n"
-        response += "Number of free spaces: /number_of_free_spaces\n"
-        response += "Average number of cars parked today: /average_number_of_cars_parked_today\n"
-        response += "Average number of free spaces today: /average_number_of_free_spaces_today\n"
-        response += "Busiest hours today: /busiest_hours_today\n"
-        response += "Activity log: /activity_log\n"
-        response += "Statistics: /statistics\n"
-        response += "Last 24 hours history: /last_24_hours_history\n"
-        response += "All time history: /all_time_history"
-
+        response = {"Available API paths": [{"Number of cars parked": "/number_of_cars_parked"},
+                                            {"Number of cars parked today at each hour": "/number_of_cars_parked_today_hourly"},
+                                            {"Number of entries in the last hour": "/number_of_entries_in_the_last_hour"},
+                                            {"Number of exits in the last hour": "/number_of_exits_in_the_last_hour"},
+                                            {"Number of entries today (until now)": "/number_of_entries_today"},
+                                            {"Number of exits today (until now)": "/number_of_exits_today"},
+                                            {"Number of spaces": "/number_of_spaces"},
+                                            {"Number of free spaces": "/number_of_free_spaces"},
+                                            {"Average number of cars parked today (active hours until now)": "/average_number_of_cars_parked_today"},
+                                            {"Average number of free spaces today (active hours until now)": "/average_number_of_free_spaces_today"},
+                                            {"Busiest hours today (until now)": "/busiest_hours_today"},
+                                            {"Activity log": "/activity_log"},
+                                            {"Main data package": "/main_data_package"},
+                                            {"Last 24 hours history": "/last_24_hours_history"},
+                                            {"All time history": "/all_time_history"}]}
+        response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
+# Map each path to the corresponding class
 api.add_resource(ApiHelp, '/api_help')
 api.add_resource(NumberOfCarsParked, '/number_of_cars_parked')
 api.add_resource(NumberOfCarsParkedTodayHourly, '/number_of_cars_parked_today_hourly')
@@ -389,7 +414,7 @@ api.add_resource(AverageNumberOfCarsParkedToday, '/average_number_of_cars_parked
 api.add_resource(AverageNumberOfFreeSpacesToday, '/average_number_of_free_spaces_today')
 api.add_resource(BusiestHoursToday, '/busiest_hours_today')
 api.add_resource(ActivityLog, '/activity_log')
-api.add_resource(Statistics, '/statistics')
+api.add_resource(MainDataPackage, '/main_data_package')
 api.add_resource(Last24HoursHistory, '/last_24_hours_history')
 api.add_resource(AllTimeHistory, '/all_time_history')
 
