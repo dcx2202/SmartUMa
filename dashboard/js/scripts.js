@@ -145,8 +145,68 @@ function getFullLog() {
   });
 }
 
+function logout() {
+  window.alert("logout!")
+}
+
+function drawGraph(data_array) {
+
+  //get the bar chart canvas
+  var ctx = $("#bar-chartcanvas");
+  var n_carros = new Array(24);
+  var colors = new Array(24);
+  var borders = new Array(24);
+  var labels = new Array(24);
+  for (var i = 0; i < 24; i++) {
+    n_carros[i] = 60;
+    colors[i] = "rgba(255,170,86,0.8)";
+    borders[i] = "rgba(10,20,30,1)";
+    labels[i] = i + "h";
+  }
+
+  //bar chart data
+  var data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Number of parked cars",
+        data: n_carros,
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 1
+      }
+    ]
+  };
+
+  //options
+  var options = {
+    responsive: true,
+    legend: {
+      display: true,
+      position: "bottom",
+      labels: {
+        fontColor: "#333",
+        fontSize: 16
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0
+        }
+      }]
+    }
+  };
+
+  //create Chart class object
+  var chart = new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options
+  });
+};
+
 //Call functions
+
 getNumberOfCars();
-//getNumberOfFreeSpaces();
-//getNumberOfEntriesInTheLastHour();
-//getNumberOfExitsInTheLastHour();
+drawGraph();
