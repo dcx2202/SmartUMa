@@ -2,8 +2,9 @@
 //requests nao acumularem caso um deles demore a executar
 
 var timeout_timer = 2000;
-var source_url = 'http://84.23.208.186:25000'
+var source_url = 'http://84.23.208.186:25000';
 
+/*
 function getNumberOfCars() {
   $.ajax({
     type: "get",
@@ -148,8 +149,70 @@ function getFullLog() {
 function logout() {
   window.alert("logout!")
 }
+*/
 
-function drawGraph(data_array) {
+function getMainPackage() {
+  $.ajax({
+    type: "get",
+    url: source_url + "/main_data_package",
+    success: function (data) {
+      //console.log the response
+      console.log(data);
+      updateFields(data)
+      setTimeout(function () {
+        getMainPackage();
+      }, timeout_timer);
+    },
+    error: function () {
+      setTimeout(function () {
+        console.log('error');
+        getMainPackage();
+      }, timeout_timer);
+    }
+  });
+}
+
+function updateFields(data) {
+  var text = "";
+  data['Busiest hours today'].forEach(element => {
+    text += element + "h" + " ";
+  });
+
+  $('#busiest_hours_today').text(text);
+  $('#number_of_cars_parked').text(data['Number of cars parked']);
+  $('#number_of_free_spaces').text(data['Number of free spaces']);
+  $('#number_of_entries_last_hour').text(data['Number of entries in the last hour']);
+  $('#number_of_exits_last_hour').text(data['Number of exits in the last hour']);
+  $('#number_of_spaces').text(data['Number of spaces']);
+  $('#total_entries_today').text(data['Number of entries today']);
+  $('#total_exits_today').text(data['Number of exits today']);
+  $('#average_free_spaces_today').text(data['Average number of free spaces today']);
+  $('#average_parked_cars_today').text(data['Average number of cars parked today']);
+
+  updateActivityLog(data);
+  updateGraph(data['Number of cars parked today hourly']);
+}
+
+function updateActivityLog(data) {
+  $('#activity_1').text(data['Activity log'][0]['event']);
+  $('#time_1').text(data['Activity log'][0]['time']);
+  $('#activity_2').text(data['Activity log'][1]['event']);
+  $('#time_2').text(data['Activity log'][1]['time']);
+  $('#activity_3').text(data['Activity log'][2]['event']);
+  $('#time_3').text(data['Activity log'][2]['time']);
+  $('#activity_4').text(data['Activity log'][3]['event']);
+  $('#time_4').text(data['Activity log'][3]['time']);
+  $('#activity_5').text(data['Activity log'][4]['event']);
+  $('#time_5').text(data['Activity log'][4]['time']);
+  $('#activity_6').text(data['Activity log'][5]['event']);
+  $('#time_6').text(data['Activity log'][5]['time']);
+  $('#activity_7').text(data['Activity log'][6]['event']);
+  $('#time_7').text(data['Activity log'][6]['time']);
+  $('#activity_8').text(data['Activity log'][7]['event']);
+  $('#time_8').text(data['Activity log'][7]['time']);
+}
+
+function drawGraph() {
 
   //get the bar chart canvas
   var ctx = $("#bar-chartcanvas");
@@ -158,7 +221,7 @@ function drawGraph(data_array) {
   var borders = new Array(24);
   var labels = new Array(24);
   for (var i = 0; i < 24; i++) {
-    n_carros[i] = 60;
+    n_carros[i] = 130;
     colors[i] = "rgba(255,170,86,0.8)";
     borders[i] = "rgba(10,20,30,1)";
     labels[i] = i + "h";
@@ -199,14 +262,37 @@ function drawGraph(data_array) {
   };
 
   //create Chart class object
-  var chart = new Chart(ctx, {
+  chart = new Chart(ctx, {
     type: "bar",
     data: data,
     options: options
   });
 };
 
+function updateGraph(data_array) {
+  //console.log(data_array);
+
+  //remove old data
+  for (var i = 0; i < 24; i++) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
+    });
+  }
+
+  //add new data
+  for (var i = 0; i < 24; i++) {
+    chart.data.labels.push(i + "h");
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(data_array[i]);
+    });
+  }
+  chart.update(0);
+  //console.log(chart);
+}
+
 //Call functions
 
-getNumberOfCars();
+//getNumberOfCars();
 drawGraph();
+getMainPackage();

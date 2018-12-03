@@ -36,7 +36,7 @@
       <!-- Top Menu Items -->
       <div class="nav navbar-nav top-nav navbar-right pull-xs-right">
         <li class="nav-item">
-          <a href="#" class="nav-link" id='username' onclick="logout()">
+          <a class="nav-link" id='username' onclick="logout()">
             <i class="fa fa-user"></i>
             User name here
           </a>
@@ -67,13 +67,13 @@
                     <i class="fa fa-car fa-5x"></i>
                   </div>
                   <div class="col-xs-9 text-xs-right">
-                    <div class="huge" id='number_of_cars_parked'>000</div>
+                    <div class="huge" id='number_of_cars_parked'>---</div>
                     <div>out of 130</div>
                   </div>
                 </div>
               </div>
               <div class="card-footer card-default">
-                <a href="#">
+                <a>
                   <span class="pull-xs-left">N° of cars parked</span>
                   <span class="pull-xs-right"></span>
                   <div class="clearfix"></div>
@@ -89,13 +89,13 @@
                     <i class="fa fa-map-marker fa-5x"></i>
                   </div>
                   <div class="col-xs-9 text-xs-right">
-                    <div class="huge" id='number_of_free_spaces'>000</div>
+                    <div class="huge" id='number_of_free_spaces'>---</div>
                     <div>free spaces</div>
                   </div>
                 </div>
               </div>
               <div class="card-footer card-yellow">
-                <a href="#">
+                <a>
                   <span class="pull-xs-left">Nº of free spaces</span>
                   <span class="pull-xs-right"></span>
                   <div class="clearfix"></div>
@@ -111,13 +111,13 @@
                     <i class="fa fa-arrow-circle-o-down fa-5x"></i>
                   </div>
                   <div class="col-xs-9 text-xs-right">
-                    <div class="huge" id='number_of_entries_last_hour'>000</div>
+                    <div class="huge" id='number_of_entries_last_hour'>---</div>
                     <div>cars entered</div>
                   </div>
                 </div>
               </div>
               <div class="card-footer card-green">
-                <a href="#">
+                <a>
                   <span class="pull-xs-left">N° of entries in the last hour</span>
                   <span class="pull-xs-right"></span>
                   <div class="clearfix"></div>
@@ -133,13 +133,13 @@
                     <i class="fa fa-arrow-circle-o-up fa-5x"></i>
                   </div>
                   <div class="col-xs-9 text-xs-right">
-                    <div class="huge" id='number_of_exits_last_hour'>000</div>
+                    <div class="huge" id='number_of_exits_last_hour'>---</div>
                     <div>cars left</div>
                   </div>
                 </div>
               </div>
               <div class="card-footer card-red">
-                <a href="#">
+                <a>
                   <span class="pull-xs-left">N° of exits in the last hour</span>
                   <span class="pull-xs-right"></span>
                   <div class="clearfix"></div>
@@ -177,87 +177,75 @@
         <!-- /.row -->
 
         <div class="row">
-          <div class="col-xl-6 col-lg-12">
+          <div class="col-lg-6 col-sm-12">
             <div class="card card-default">
               <div class="card-header card-default">
                 <i class="fa fa-clock-o fa-fw"></i> Activity Log
               </div>
               <div class="card-block">
                 <div class="list-group">
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">just now</span>
-                    <i class="fa fa-fw fa-calendar"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_1'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_1'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">4 minutes ago</span>
-                    <i class="fa fa-fw fa-comment"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_2'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_2'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">23 minutes ago</span>
-                    <i class="fa fa-fw fa-truck"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_3'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_3'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">46 minutes ago</span>
-                    <i class="fa fa-fw fa-money"></i> A car left the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_4'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_4'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">1 hour ago</span>
-                    <i class="fa fa-fw fa-user"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_5'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_5'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">2 hours ago</span>
-                    <i class="fa fa-fw fa-check"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_6'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_6'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">yesterday</span>
-                    <i class="fa fa-fw fa-globe"></i> A car left the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_7'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_7'> --- </span>
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">two days ago</span>
-                    <i class="fa fa-fw fa-check"></i> A car left the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_8'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_8'> --- </span>
                   </a>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-xl-6 col-lg-12">
+          <div class="col-lg-6 col-sm-12">
             <div class="card card-default">
               <div class="card-header card-default">
                 <i class="fa fa-clock-o fa-fw"></i> Statistics
               </div>
               <div class="card-block">
                 <div class="list-group">
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">just now</span>
-                    <i class="fa fa-fw fa-calendar"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='average_parked_cars_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Average cars parked today
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">4 minutes ago</span>
-                    <i class="fa fa-fw fa-comment"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='average_free_spaces_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Average free spaces today
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">23 minutes ago</span>
-                    <i class="fa fa-fw fa-truck"></i> A car entered the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='busiest_hours_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Busiest hours today
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">46 minutes ago</span>
-                    <i class="fa fa-fw fa-money"></i> A car left the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='total_entries_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Total entries today
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">1 hour ago</span>
-                    <i class="fa fa-fw fa-user"></i> A car entered the park
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">2 hours ago</span>
-                    <i class="fa fa-fw fa-check"></i> A car entered the park
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">yesterday</span>
-                    <i class="fa fa-fw fa-globe"></i> A car left the park
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="label label-pill label-default pull-xs-right">two days ago</span>
-                    <i class="fa fa-fw fa-check"></i> A car left the park
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='total_exits_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Total exits today
                   </a>
                 </div>
               </div>
@@ -269,10 +257,10 @@
         <!-- /.container-fluid -->
 
       </div>
-      <!-- /#page-wrapper -->
+      <!-- /page-wrapper -->
 
     </div>
-    <!-- /#wrapper -->
+    <!-- /wrapper -->
 
     <script src='js/scripts.js'></script>
 
