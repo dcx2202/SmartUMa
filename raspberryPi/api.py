@@ -259,19 +259,21 @@ def get_event_string(entry_datetime):
     return time_str
 
 
+# Returns all the data suitable for use in a dashboard with only one request
+# Tries to minimize the time spent accessing the database to allow for realtime updates
 def get_main_data_package():
 
-    result = []
+    # result that will be returned
+    result = {}
 
     number_of_cars_parked = db_manager.get_num_cars_parked_from_db()
     number_of_spaces = raspbpi.get_num_spaces()
 
-    result.append({"Number of cars parked": number_of_cars_parked})
-    result.append({"Number of free spaces": number_of_spaces - number_of_cars_parked})
-    result.append({"Number of spaces": number_of_spaces})
-    result.append({"Number of spaces": number_of_spaces})
-    result.append({"Number of entries in the last hour": db_manager.get_num_entries_last_hour_from_db()})
-    result.append({"Number of exits in the last hour": db_manager.get_num_exits_last_hour_from_db()})
+    result["Number of cars parked"] = number_of_cars_parked
+    result["Number of free spaces"] = number_of_spaces - number_of_cars_parked
+    result["Number of spaces"] = number_of_spaces
+    result["Number of entries in the last hour"] = db_manager.get_num_entries_last_hour_from_db()
+    result["Number of exits in the last hour"] = db_manager.get_num_exits_last_hour_from_db()
 
 
     # get full last 24 hours log
@@ -285,7 +287,7 @@ def get_main_data_package():
         if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
             last24hlog['entries'].pop(i)
 
-    result.append({"Number of entries today": len(last24hlog['entries'])})
+    result["Number of entries today"] = len(last24hlog['entries'])
 
 
     # NUMBER OF EXITS TODAY
@@ -296,7 +298,7 @@ def get_main_data_package():
         if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
             last24hlog['exits'].pop(i)
 
-    result.append({"Number of exits today": len(last24hlog['exits'])})
+    result["Number of exits today"] = len(last24hlog['exits'])
 
 
     # NUMBER OF CARS PARKED TODAY AT EACH HOUR
@@ -386,7 +388,7 @@ def get_main_data_package():
         elif entry_datetime < exit_datetime:
             spaces[i] = exit_spaces[i]
 
-    result = result.append({"Number of cars parked today hourly": spaces})
+    result["Number of cars parked today hourly"] = spaces
 
 
     # BUSIEST HOURS TODAY #
@@ -400,8 +402,8 @@ def get_main_data_package():
             # if this hour's number of cars parked equals the max then add it as one of the busiest
             busiest_hours.append(i)
 
-    result = result.append({"Busiest hours today": busiest_hours})
-
+    result["Busiest hours today"] = busiest_hours
+            
 
     # AVERAGE NUMBER OF CARS PARKED/FREE SPACES TODAY
     # Average only the active hours - 05h:00m -> 22h:00m
@@ -413,14 +415,14 @@ def get_main_data_package():
 
     # Divide the sum by the number of active hours that have passed today (including the current hour)
     if current_hour < 5:
-        result = result.append({"Average number of cars parked today": 0})
-        result = result.append({"Average number of free spaces today": number_of_spaces - 0})
+        result["Average number of cars parked today"] = 0
+        result["Average number of free spaces today"] = number_of_spaces - 0
     elif current_hour < 22:
-        result = result.append({"Average number of cars parked today": sum / (datetime.datetime.now().hour - 4)})
-        result = result.append({"Average number of free spaces today": number_of_spaces - sum / (datetime.datetime.now().hour - 4)})
+        result["Average number of cars parked today"] = sum / (datetime.datetime.now().hour - 4)
+        result["Average number of free spaces today"] = number_of_spaces - sum / (datetime.datetime.now().hour - 4)
     elif current_hour < 24:
-        result = result.append({"Average number of cars parked today": sum / 17})
-        result = result.append({"Average number of free spaces today": number_of_spaces - sum / 17})
+        result["Average number of cars parked today"] = sum / 17
+        result["Average number of free spaces today"] = number_of_spaces - sum / 17
 
 
     # ACTIVITY LOG
@@ -481,7 +483,8 @@ def get_main_data_package():
             events.append({"event": "A car exited the park", "time": time_str})
 
     # append the reversed events (first position is the most recent event)
-    result = result.append({"Activity log": events[::-1]})
+    result["Activity log"] = events[::-1]
+    return result
 
 
 # Request handling
