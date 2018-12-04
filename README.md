@@ -1,6 +1,7 @@
 # SmartUMa
 SmartUMa - a platform that brings your University to life at your fingertips
 ## http://smartumaparking.x10host.com/
+(or https://dcx2202.github.io/SmartUMa/)
 
 ## Project developed for University course "Distributed Systems".
 
