@@ -1,7 +1,7 @@
 //usar "timeout" apenas no success, em vez de "interval" para os 
 //requests nao acumularem caso um deles demore a executar
 
-var timeout_timer = 2000;
+var timeout_timer = 1000;
 var source_url = 'http://84.23.208.186:25000';
 
 function logout() {
@@ -16,7 +16,7 @@ function getMainPackage() {
     success: function (data) {
       //console.log the response
       console.log(data);
-      updateFields(data)
+      updateFields(data);
       setTimeout(function () {
         getMainPackage();
       }, timeout_timer);
@@ -151,5 +151,5 @@ function updateGraph(data_array) {
 
 //Call functions
 
-drawGraph();
+drawGraph(); //draws a graph with placeholder values
 getMainPackage();
