@@ -259,6 +259,234 @@ def get_event_string(entry_datetime):
     return time_str
 
 
+# Returns all the data suitable for use in a dashboard with only one request
+# Tries to minimize the time spent accessing the database to allow for realtime updates
+def get_main_data_package():
+
+    # result that will be returned
+    result = {}
+
+    number_of_cars_parked = db_manager.get_num_cars_parked_from_db()
+    number_of_spaces = raspbpi.get_num_spaces()
+
+    result["Number of cars parked"] = number_of_cars_parked
+    result["Number of free spaces"] = number_of_spaces - number_of_cars_parked
+    result["Number of spaces"] = number_of_spaces
+    result["Number of entries in the last hour"] = db_manager.get_num_entries_last_hour_from_db()
+    result["Number of exits in the last hour"] = db_manager.get_num_exits_last_hour_from_db()
+
+
+    # get full last 24 hours log
+    last24hlog_original = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+
+
+    # NUMBER OF ENTRIES TODAY
+    # get only today's entries
+    last24hlog = last24hlog_original
+    for i in range(len(last24hlog['entries']) - 1, -1, -1):
+        if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['entries'].pop(i)
+
+    result["Number of entries today"] = len(last24hlog['entries'])
+
+
+    # NUMBER OF EXITS TODAY
+    # Returns the number of exits today until now
+    # get only today's exits
+    last24hlog = last24hlog_original
+    for i in range(len(last24hlog['exits']) - 1, -1, -1):
+        if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['exits'].pop(i)
+
+    result["Number of exits today"] = len(last24hlog['exits'])
+
+
+    # NUMBER OF CARS PARKED TODAY AT EACH HOUR
+    # get full last 24 hours log
+    last24hlog = last24hlog_original
+
+    # get only today's log
+    for i in range(len(last24hlog['entries']) - 1, -1, -1):
+        if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['entries'].pop(i)
+
+    for i in range(len(last24hlog['exits']) - 1, -1, -1):
+        if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['exits'].pop(i)
+
+    # declare variables
+    spaces = []
+    entry_spaces = []
+    exit_spaces = []
+    entry_datetimes = []
+    exit_datetimes = []
+
+    # initializer variables
+    for i in range(0, 24):
+        spaces.append(0)
+        entry_spaces.append(0)
+        exit_spaces.append(0)
+        entry_datetimes.append(0)
+        exit_datetimes.append(0)
+
+    # get last entry/exit date of each hour
+    for i in range(0, len(last24hlog['entries'])):
+        entry_datetimes[int(last24hlog['entries'][i]['time'].split(':')[0])] = last24hlog['entries'][i]['date'] + " " + \
+                                                                               last24hlog['entries'][i]['time']
+
+    for i in range(0, len(last24hlog['exits'])):
+        exit_datetimes[int(last24hlog['exits'][i]['time'].split(':')[0])] = last24hlog['exits'][i]['date'] + " " + \
+                                                                            last24hlog['exits'][i]['time']
+
+    # get last number of cars parked at each hour from both entries and exits
+    for i in range(0, len(last24hlog['entries'])):
+        entry_spaces[int(last24hlog['entries'][i]['time'].split(':')[0])] = last24hlog['entries'][i]['num_cars']
+
+    for i in range(0, len(last24hlog['exits'])):
+        exit_spaces[int(last24hlog['exits'][i]['time'].split(':')[0])] = last24hlog['exits'][i]['num_cars']
+
+    # for each hour create datetime objects, compare and store in spaces the last overall number of cars parked
+    for i in range(0, 24):
+
+        # create entry datetime object
+        if entry_datetimes[i] == 0:
+            entry_datetime = 0
+        else:
+            entry_date = entry_datetimes[i].split(' ')[0].split('-')
+            entry_time = entry_datetimes[i].split(' ')[1].split(':')
+            entry_datetime = datetime.datetime(int(entry_date[0]),
+                                               int(entry_date[1]),
+                                               int(entry_date[2]),
+                                               int(entry_time[0]),
+                                               int(entry_time[1]),
+                                               int(entry_time[2].split('.')[0]),
+                                               int(entry_time[2].split('.')[1]))
+
+        # create exit datetime object
+        if exit_datetimes[i] == 0:
+            exit_datetime = 0
+        else:
+            exit_date = exit_datetimes[i].split(' ')[0].split('-')
+            exit_time = exit_datetimes[i].split(' ')[1].split(':')
+            exit_datetime = datetime.datetime(int(exit_date[0]),
+                                              int(exit_date[1]),
+                                              int(exit_date[2]),
+                                              int(exit_time[0]),
+                                              int(exit_time[1]),
+                                              int(exit_time[2].split('.')[0]),
+                                              int(exit_time[2].split('.')[1]))
+
+        # check which one is the most recent
+        if entry_datetime == 0 and exit_datetime == 0:
+            spaces[i] = 0
+        elif entry_datetime != 0 and exit_datetime == 0:
+            spaces[i] = entry_spaces[i]
+        elif entry_datetime == 0 and exit_datetime != 0:
+            spaces[i] = exit_spaces[i]
+        elif entry_datetime > exit_datetime:
+            spaces[i] = entry_spaces[i]
+        elif entry_datetime < exit_datetime:
+            spaces[i] = exit_spaces[i]
+
+    result["Number of cars parked today hourly"] = spaces
+
+
+    # BUSIEST HOURS TODAY #
+    busiest_hours = []
+
+    # find the highest number of cars parked at any hour
+    max_cars = max(spaces)
+
+    for i in range(0, len(spaces)):
+        if spaces[i] == max_cars:
+            # if this hour's number of cars parked equals the max then add it as one of the busiest
+            busiest_hours.append(i)
+
+    result["Busiest hours today"] = busiest_hours
+            
+
+    # AVERAGE NUMBER OF CARS PARKED/FREE SPACES TODAY
+    # Average only the active hours - 05h:00m -> 22h:00m
+    sum = 0
+    for i in range(6, 22):
+        sum += spaces[i]
+
+    current_hour = datetime.datetime.now().hour
+
+    # Divide the sum by the number of active hours that have passed today (including the current hour)
+    if current_hour < 5:
+        result["Average number of cars parked today"] = 0
+        result["Average number of free spaces today"] = number_of_spaces - 0
+    elif current_hour < 22:
+        result["Average number of cars parked today"] = sum / (datetime.datetime.now().hour - 4)
+        result["Average number of free spaces today"] = number_of_spaces - sum / (datetime.datetime.now().hour - 4)
+    elif current_hour < 24:
+        result["Average number of cars parked today"] = sum / 17
+        result["Average number of free spaces today"] = number_of_spaces - sum / 17
+
+
+    # ACTIVITY LOG
+    # get full last 24 hours log
+    last24hlog = last24hlog_original
+
+    # get only today's entries
+    for i in range(len(last24hlog['entries']) - 1, -1, -1):
+        if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['entries'].pop(i)
+
+    # get only today's exits
+    for i in range(len(last24hlog['exits']) - 1, -1, -1):
+        if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
+            last24hlog['exits'].pop(i)
+
+    # declare variables
+    events = []
+    entries = []
+    exits = []
+
+    # get last 8 entries and exits
+    for i in range(0, 8):
+        entries.append(
+            {"event_info": last24hlog['entries'][len(last24hlog['entries']) - 1 - i], "event_type": "entry"})
+        exits.append({"event_info": last24hlog['exits'][len(last24hlog['exits']) - 1 - i], "event_type": "exit"})
+
+    # join them
+    temp_events = entries + exits
+
+    # sort them by date
+    sorted_events = sorted(temp_events, key=get_event_datetime)
+
+    # remove the 8 least recent events out of the 16
+    for i in range(8):
+        sorted_events.pop(0)
+
+    # for each event get the data we want and add it to the final list of events
+    for i in range(8):
+        # create event datetime object
+        event_date = sorted_events[i]['event_info']['date'].split('-')
+        event_time = sorted_events[i]['event_info']['time'].split(':')
+        event_datetime = datetime.datetime(int(event_date[0]),
+                                           int(event_date[1]),
+                                           int(event_date[2]),
+                                           int(event_time[0]),
+                                           int(event_time[1]),
+                                           int(event_time[2].split('.')[0]),
+                                           int(event_time[2].split('.')[1]))
+
+        # get string indicating how much time has passed since then
+        time_str = get_event_string(event_datetime)
+
+        # add to the final list of events a new event with a description of it and how long ago it happened
+        if sorted_events[i]['event_type'] == "entry":  # if it is an entry event the string should say so
+            events.append({"event": "A car entered the park", "time": time_str})
+        else:  # if it is an exit event the string says so too
+            events.append({"event": "A car exited the park", "time": time_str})
+
+    # append the reversed events (first position is the most recent event)
+    result["Activity log"] = events[::-1]
+    return result
+
+
 # Request handling
 
 # These are called when a request for the path they serve is received
@@ -347,19 +575,7 @@ class ActivityLog(Resource):
 
 class MainDataPackage(Resource):
     def get(self):
-        response = jsonify({"Number of cars parked": db_manager.get_num_cars_parked_from_db(),
-                            "Number of free spaces": db_manager.get_num_free_spaces_from_db(),
-                            "Number of spaces": raspbpi.get_num_spaces(),
-                            "Number of entries in the last hour": db_manager.get_num_entries_last_hour_from_db(),
-                            "Number of exits in the last hour": db_manager.get_num_exits_last_hour_from_db(),
-                            "Number of entries today": get_number_of_entries_today(),
-                            "Number of exits today": get_number_of_exits_today(),
-                            "Average number of cars parked today": calculate_average_number_cars_parked_today(),
-                            "Average number of free spaces today": raspbpi.get_num_spaces() - calculate_average_number_cars_parked_today(),
-                            "Number of cars parked today hourly": get_number_cars_by_hour(),
-                            "Busiest hours today": get_busiest_hours_today(),
-                            "Activity log": get_activity_log()
-                            })
+        response = jsonify(get_main_data_package())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
