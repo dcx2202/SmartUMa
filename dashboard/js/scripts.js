@@ -40,7 +40,9 @@ function updateFields(data) {
   $('#number_of_cars_parked').text(data['Number of cars parked']);
   $('#number_of_free_spaces').text(data['Number of free spaces']);
   $('#number_of_entries_last_hour').text(data['Number of entries in the last hour']);
+  $('#number_of_entries_last_hour_2').text(data['Number of entries in the last hour']);
   $('#number_of_exits_last_hour').text(data['Number of exits in the last hour']);
+  $('#number_of_exits_last_hour_2').text(data['Number of exits in the last hour']);
   $('#number_of_spaces').text(data['Number of spaces']);
   $('#total_entries_today').text(data['Number of entries today']);
   $('#total_exits_today').text(data['Number of exits today']);
