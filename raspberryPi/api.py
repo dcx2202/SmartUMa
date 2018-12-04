@@ -617,7 +617,7 @@ class ApiHelp(Resource):
 
 
 # Map each path to the corresponding class
-api.add_resource(ApiHelp, '/api_help')
+api.add_resource(ApiHelp, '/', '/api_help')
 api.add_resource(NumberOfCarsParked, '/number_of_cars_parked')
 api.add_resource(NumberOfCarsParkedTodayHourly, '/number_of_cars_parked_today_hourly')
 api.add_resource(NumberOfEntriesInTheLastHour, '/number_of_entries_in_the_last_hour')
