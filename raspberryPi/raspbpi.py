@@ -1,7 +1,7 @@
 import datetime as Date
 import db_manager
 
-num_cars = = db_manager.get_num_cars_parked_from_db()
+num_cars = db_manager.get_num_cars_parked_from_db()
 num_spaces = 130
 num_entries = 0
 num_exits = 0
