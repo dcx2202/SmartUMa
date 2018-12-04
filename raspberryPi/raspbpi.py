@@ -1,7 +1,7 @@
 import datetime as Date
 import db_manager
 
-num_cars = 0
+num_cars = = db_manager.get_num_cars_parked_from_db()
 num_spaces = 130
 num_entries = 0
 num_exits = 0
@@ -56,7 +56,7 @@ def new_entry(data):
     update_num_cars(data)  # Update the number of cars
     update_num_spaces()    # Update the number of spaces
     db_manager.insert_entry_to_db(
-        Date.datetime.now().date(), Date.datetime.now().time())
+        Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
 
     # Do something (update stats, store info, ...)
 
@@ -66,7 +66,7 @@ def new_exit(data):
     update_num_cars(-data)  # Update the number of cars
     update_num_spaces()  # Update the number of spaces
     db_manager.insert_exit_to_db(
-        Date.datetime.now().date(), Date.datetime.now().time())
+        Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
 
     # Display something
     # Do something (update stats, store info, ...)

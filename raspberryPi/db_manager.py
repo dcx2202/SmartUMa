@@ -18,12 +18,12 @@ def connect_to_db():
 
 
 # inserts a new entry to the respective table in the DB
-def insert_entry_to_db(date, time):
+def insert_entry_to_db(date, time, n_cars):
     mydb = connect_to_db()
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO entry_sensor_tab (date, time, num_cars) VALUES (%s, %s, %s)"
-    val = (date, time, get_num_cars_parked_from_db() + 1)
+    val = (date, time, n_cars)
 
     mycursor.execute(sql, val)
     mydb.commit()
@@ -32,12 +32,12 @@ def insert_entry_to_db(date, time):
 
 
 # inserts a new exit to the respective table in the DB
-def insert_exit_to_db(date, time):
+def insert_exit_to_db(date, time, n_cars):
     mydb = connect_to_db()
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO exit_sensor_tab (date, time, num_cars) VALUES (%s, %s, %s)"
-    val = (date, time, get_num_cars_parked_from_db() - 1)
+    val = (date, time, n_cars)
 
     mycursor.execute(sql, val)
     mydb.commit()
