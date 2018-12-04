@@ -56,7 +56,7 @@ def new_entry(data):
     update_num_cars(data)  # Update the number of cars
     update_num_spaces()    # Update the number of spaces
     db_manager.insert_entry_to_db(
-        Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
+        Date.datetime.now().date(), Date.datetime.now().time())
 
     # Do something (update stats, store info, ...)
 
@@ -66,7 +66,7 @@ def new_exit(data):
     update_num_cars(-data)  # Update the number of cars
     update_num_spaces()  # Update the number of spaces
     db_manager.insert_exit_to_db(
-        Date.datetime.now().date(), Date.datetime.now().time(), get_num_cars())
+        Date.datetime.now().date(), Date.datetime.now().time())
 
     # Display something
     # Do something (update stats, store info, ...)
