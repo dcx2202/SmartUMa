@@ -8,3 +8,7 @@ body {
   margin: 0 auto;
   padding-top: 10px;
 }
+
+#bar-chartcanvas {
+  max-height: 430px !important;
+}
