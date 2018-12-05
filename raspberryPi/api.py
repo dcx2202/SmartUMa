@@ -33,7 +33,16 @@ def calculate_average_number_cars_parked_today():
 # Returns the number of cars parked today at the end of each hour
 def get_number_cars_by_hour():
     # get full last 24 hours log
-    last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    data = db_manager.get_last_24h_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+
+    last24hlog = json.loads(data.get_data())
 
     # get only today's log
     for i in range(len(last24hlog['entries']) - 1, -1, -1):
@@ -124,7 +133,15 @@ def get_number_cars_by_hour():
 # Returns the number of entries today until now
 def get_number_of_entries_today():
     # get full last 24 hours log
-    last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    data = db_manager.get_last_24h_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+    last24hlog = json.loads(data.get_data())
 
     # get only today's entries
     for i in range(len(last24hlog['entries']) - 1, -1, -1):
@@ -137,7 +154,15 @@ def get_number_of_entries_today():
 # Returns the number of exits today until now
 def get_number_of_exits_today():
     # get full last 24 hours log
-    last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    data = db_manager.get_last_24h_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+    last24hlog = json.loads(data.get_data())
 
     # get only today's exits
     for i in range(len(last24hlog['exits']) - 1, -1, -1):
@@ -183,7 +208,15 @@ def get_event_datetime(elem):
 # Returns the last 8 events (entries and or exits), each with a description and a time of occurence
 def get_activity_log():
     # get full last 24 hours log
-    last24hlog = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    data = db_manager.get_last_24h_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+    last24hlog = json.loads(data.get_data())
     
     # get only today's entries
     for i in range(len(last24hlog['entries']) - 1, -1, -1):
@@ -280,7 +313,16 @@ def get_main_data_package():
 
 
     # get full last 24 hours log
-    last24hlog_original = json.loads(db_manager.get_last_24h_log_from_database().get_data())
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    data = db_manager.get_last_24h_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+
+    last24hlog_original = json.loads(data.get_data())
 
 
     # NUMBER OF ENTRIES TODAY
@@ -481,26 +523,119 @@ def get_main_data_package():
     return result
 
 
+def get_monitoring_package():
+    global db_access_times
+    result = {}
+
+    # Measure the time it took to access the database and store it to calculate the average later
+    db_access_starting_time = datetime.datetime.now()
+
+    alltimelog = db_manager.get_full_log_from_database()
+
+    db_access_ending_time = datetime.datetime.now()
+    db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+    # NUMBER OF DATABASE ENTRIES
+    result['Number of database entries'] = len(alltimelog['entries']) + len(alltimelog['exits'])
+
+    # NUMBER OF TABLES
+    result['Number of database tables'] = 2
+
+    # NUMBER OF API ENDPOINTS AVAILABLE
+    result['Number of api endpoints available'] = 16
+
+    # API UPTIME
+    from dateutil import relativedelta
+
+    time_delta = relativedelta.relativedelta(datetime.datetime.now(), api_starting_time)
+
+    if time_delta.years != 0:
+        time = time_delta.years + " years"
+
+    if time_delta.months != 0:
+        if time == "":
+            time = time_delta.months + " months"
+        else:
+            time += ", " + time_delta.months + " months"
+
+    if time_delta.days != 0:
+        if time == "":
+            time = time_delta.days + " days"
+        else:
+            time += ", " + time_delta.days + " days"
+
+    if time_delta.hours != 0:
+        if time == "":
+            time = time_delta.hours + " hours"
+        else:
+            time += ", " + time_delta.hours + " hours"
+
+    if time_delta.minutes != 0:
+        if time == "":
+            time = time_delta.minutes + " minutes"
+        else:
+            time += ", " + time_delta.minutes + " minutes"
+
+    if time_delta.seconds != 0:
+        if time == "":
+            time = time_delta.seconds + " seconds"
+        else:
+            time += ", " + time_delta.seconds + " seconds"
+
+    result['API Uptime'] = time
+
+    sum = 0
+    for i in range(0, len(db_access_times)):
+        sum += db_access_times[i]
+
+    result['Average database access time'] = sum / len(db_access_times)
+    return result
+
+
 # Request handling
 
 # These are called when a request for the path they serve is received
 class NumberOfCarsParked(Resource):
     def get(self): # Flask maps the type of http request to the defined methods in each class, in this case GET
-        response = jsonify(db_manager.get_num_cars_parked_from_db()) # get the number of cars parked from the database and jsonify it
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
+        data = db_manager.get_num_cars_parked_from_db()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+        response = jsonify(data) # get the number of cars parked from the database and jsonify it
         response.headers.add("Access-Control-Allow-Origin", "*") # Add an header to the response allowing CORS from any origin
         return response
 
 
 class NumberOfEntriesInTheLastHour(Resource):
     def get(self):
-        response = jsonify(db_manager.get_num_entries_last_hour_from_db())
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
+        data = db_manager.get_num_entries_last_hour_from_db()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+        response = jsonify(data)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class NumberOfExitsInTheLastHour(Resource):
     def get(self):
-        response = jsonify(db_manager.get_num_exits_last_hour_from_db())
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
+        data = db_manager.get_num_exits_last_hour_from_db()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+        response = jsonify(data)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
@@ -528,7 +663,15 @@ class NumberOfSpaces(Resource):
 
 class NumberOfFreeSpaces(Resource):
     def get(self):
-        response = jsonify(db_manager.get_num_free_spaces_from_db())
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
+        data = db_manager.get_num_free_spaces_from_db()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
+        response = jsonify(data)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
@@ -567,6 +710,7 @@ class ActivityLog(Resource):
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
+
 class MainDataPackage(Resource):
     def get(self):
         response = jsonify(get_main_data_package())
@@ -574,16 +718,37 @@ class MainDataPackage(Resource):
         return response
 
 
+class SystemMonitoringPackage(Resource):
+    def get(self):
+        response = jsonify(get_monitoring_package())
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
+
+
 class Last24HoursHistory(Resource):
     def get(self):
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
         response = db_manager.get_last_24h_log_from_database()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 
 class AllTimeHistory(Resource):
     def get(self):
+        # Measure the time it took to access the database and store it to calculate the average later
+        db_access_starting_time = datetime.datetime.now()
+
         response = db_manager.get_full_log_from_database()
+
+        db_access_ending_time = datetime.datetime.now()
+        db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
+
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
@@ -603,6 +768,7 @@ class ApiHelp(Resource):
                                             {"Busiest hours today (until now)": "/busiest_hours_today"},
                                             {"Activity log": "/activity_log"},
                                             {"Main data package": "/main_data_package"},
+                                            {"System monitoring package": "/system_monitoring_package"},
                                             {"Last 24 hours history": "/last_24_hours_history"},
                                             {"All time history": "/all_time_history"}]}
         response = jsonify(response)
@@ -625,8 +791,14 @@ api.add_resource(AverageNumberOfFreeSpacesToday, '/average_number_of_free_spaces
 api.add_resource(BusiestHoursToday, '/busiest_hours_today')
 api.add_resource(ActivityLog, '/activity_log')
 api.add_resource(MainDataPackage, '/main_data_package')
+api.add_resource(SystemMonitoringPackage, '/system_monitoring_package')
 api.add_resource(Last24HoursHistory, '/last_24_hours_history')
 api.add_resource(AllTimeHistory, '/all_time_history')
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port='25000', threaded=True)
+    global api_starting_time
+    global db_access_times
+    api_starting_time = datetime.datetime.now()
+    db_access_times = []
+
