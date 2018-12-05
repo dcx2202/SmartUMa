@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>SmartUMa - Parking Lot</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/sb-admin.css" rel="stylesheet">
+  <link href="css/default.css" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body onload="dashboard()">
+
+  <div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark bg-inverse navbar-fixed-top">
+      <a class="navbar-brand" href="#">Smart UMa</a>
+      <!-- Top Menu Items -->
+      <div class="nav navbar-nav top-nav navbar-right pull-xs-right">
+        <li class="nav-item">
+          <a style='cursor: pointer' class="nav-link" onclick="logout()">
+            <i class="fa fa-user"></i>
+            <span id='username'>
+              User name here
+            </span>
+          </a>
+        </li>
+      </div>
+    </nav>
+
+    <div id="page-wrapper">
+
+      <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="row">
+          <div class="col-lg-12">
+            <h1 class="page-header">
+              Dashboard <small>UMa Parking Lot</small>
+            </h1>
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <div class="col-lg-3 col-md-6">
+            <div class="card card-primary card-inverse">
+              <div class="card-header card-primary">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-car fa-5x"></i>
+                  </div>
+                  <div class="col-xs-9 text-xs-right">
+                    <div class="huge" id='number_of_cars_parked'>---</div>
+                    <div>out of 130</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer card-default">
+                <a>
+                  <span class="pull-xs-left">N° of cars parked</span>
+                  <span class="pull-xs-right"></span>
+                  <div class="clearfix"></div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="card card-yellow card-inverse">
+              <div class="card-header card-yellow">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-map-marker fa-5x"></i>
+                  </div>
+                  <div class="col-xs-9 text-xs-right">
+                    <div class="huge" id='number_of_free_spaces'>---</div>
+                    <div>free spaces</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer card-yellow">
+                <a>
+                  <span class="pull-xs-left">Nº of free spaces</span>
+                  <span class="pull-xs-right"></span>
+                  <div class="clearfix"></div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="card card-green card-inverse">
+              <div class="card-header card-green">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-arrow-circle-o-down fa-5x"></i>
+                  </div>
+                  <div class="col-xs-9 text-xs-right">
+                    <div class="huge" id='number_of_entries_last_hour'>---</div>
+                    <div>cars entered</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer card-green">
+                <a>
+                  <span class="pull-xs-left">N° of entries in the last hour</span>
+                  <span class="pull-xs-right"></span>
+                  <div class="clearfix"></div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="card card-red card-inverse">
+              <div class="card-header card-red">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-arrow-circle-o-up fa-5x"></i>
+                  </div>
+                  <div class="col-xs-9 text-xs-right">
+                    <div class="huge" id='number_of_exits_last_hour'>---</div>
+                    <div>cars left</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer card-red">
+                <a>
+                  <span class="pull-xs-left">N° of exits in the last hour</span>
+                  <span class="pull-xs-right"></span>
+                  <div class="clearfix"></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header card-default">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Park utilization
+              </div>
+              <div class="chart-container">
+                <canvas id="bar-chartcanvas"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="card">
+              <div class="card-header card-default">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Other groups
+              </div>
+              <div class="card-block">
+                <div id="outro-grupo-chart">
+                  other groups here
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <div class="card card-default">
+              <div class="card-header card-default">
+                <i class="fa fa-clock-o fa-fw"></i> Activity Log
+              </div>
+              <div class="card-block">
+                <div class="list-group">
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_1'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_1'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_2'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_2'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_3'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_3'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_4'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_4'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_5'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_5'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_6'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_6'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_7'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_7'> --- </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='time_8'>----------</span>
+                    <i class="fa fa-fw fa-comment"></i> <span id='activity_8'> --- </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="card card-default">
+              <div class="card-header card-default">
+                <i class="fa fa-clock-o fa-fw"></i> Statistics
+              </div>
+              <div class="card-block">
+                <div class="list-group">
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='average_parked_cars_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Average cars parked today
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='average_free_spaces_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Average free spaces today
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='busiest_hours_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Busiest hours today
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='total_entries_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Total entries today
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='total_exits_today'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Total exits today
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='number_of_entries_last_hour_2'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Entries in the last hour
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='number_of_exits_last_hour_2'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Exits in the last hour
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-default pull-xs-right" id='number_of_spaces'>----------</span>
+                    <i class="fa fa-fw fa-angle-double-right"></i> Total parking spaces
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.row -->
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- /page-wrapper -->
+
+    </div>
+    <!-- /wrapper -->
+
+  </div>
+
+  <script src='js/scripts.js'></script>
+
+</body>
+
+</html>

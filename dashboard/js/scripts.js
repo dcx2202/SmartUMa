@@ -4,10 +4,6 @@
 var timeout_timer = 1000;
 var source_url = 'http://84.23.208.186:25000';
 
-function logout() {
-  window.alert("logout!")
-}
-
 
 function getMainPackage() {
   $.ajax({
@@ -151,7 +147,72 @@ function updateGraph(data_array) {
   //console.log(chart);
 }
 
-//Call functions
+function checkLogin() {
+  var isLoggedOn = localStorage.getItem('isLoggedOn');
+  if (isLoggedOn == 'false') {
+    window.location.replace('index.html');
+  }
 
-drawGraph(); //draws a graph with placeholder values
-getMainPackage();
+  $('#username').text(localStorage.getItem('user'));
+}
+
+function checkRemember() {
+  var checked_remember = localStorage.getItem('checked');
+  var mail = localStorage.getItem('mail');
+
+  //console.log(checked_lembrar);
+  if (checked_remember === 'true') {
+    $('#mail').val(mail);
+    $('#check_remember').prop('checked', true);
+  }
+}
+
+function loginFunction() {
+
+  var mail = $('#mail').val().trim();
+  var mail_split = mail.split('@');
+  var pwd = $('#pwd').val();
+  var erro = false;
+
+  if (mail == '' || pwd == '')
+    erro = true;
+  else if (mail_split.length != 2)
+    erro = true;
+  else if (mail_split[0] == '' || mail_split[1] == '')
+    erro = true;
+  else if (mail_split[1] != 'student.uma.pt')
+    erro = true;
+
+  if (erro) {
+    window.alert('Insert valid data!');
+    return;
+  }
+
+  if ($('#check_remember').is(":checked")) {
+    localStorage.setItem('checked', true);
+    localStorage.setItem('mail', mail);
+  }
+  else {
+    localStorage.setItem('checked', false);
+  }
+
+  localStorage.setItem('isLoggedOn', true);
+  localStorage.setItem('user', mail_split[0]);
+  window.location.replace('dashboard.html');
+}
+
+function logout() {
+  window.alert("You have logged out!");
+  localStorage.setItem('isLoggedOn', false);
+  window.location.replace('index.html');
+}
+
+function dashboard() {
+  checkLogin();
+  drawGraph(); //draws a graph with placeholder values
+  getMainPackage();
+}
+
+function index() {
+  checkRemember();
+}
