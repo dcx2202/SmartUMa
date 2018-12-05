@@ -7,6 +7,10 @@ import raspbpi
 app = Flask(__name__)
 api = Api(app)
 
+api_starting_time = datetime.datetime.now()
+db_access_times = []
+number_requests_received = 0
+
 
 # Helper functions
 
@@ -298,6 +302,7 @@ def get_event_string(entry_datetime):
 def get_main_data_package():
     # used to make deep copies of data from the database to avoid accessing it more than once
     import copy
+    global db_access_times
     
     # result that will be returned
     result = {}
@@ -524,13 +529,15 @@ def get_main_data_package():
 
 
 def get_monitoring_package():
+    from dateutil import relativedelta
     global db_access_times
+    global number_requests_received
     result = {}
 
     # Measure the time it took to access the database and store it to calculate the average later
     db_access_starting_time = datetime.datetime.now()
 
-    alltimelog = db_manager.get_full_log_from_database()
+    alltimelog = json.loads(db_manager.get_full_log_from_database().get_data())
 
     db_access_ending_time = datetime.datetime.now()
     db_access_times.append((db_access_ending_time - db_access_starting_time).total_seconds())
@@ -545,51 +552,60 @@ def get_monitoring_package():
     result['Number of api endpoints available'] = 16
 
     # API UPTIME
-    from dateutil import relativedelta
-
+    time = ""
     time_delta = relativedelta.relativedelta(datetime.datetime.now(), api_starting_time)
 
     if time_delta.years != 0:
-        time = time_delta.years + " years"
+        time = str(time_delta.years) + " years"
 
     if time_delta.months != 0:
         if time == "":
-            time = time_delta.months + " months"
+            time = str(time_delta.months) + " months"
         else:
-            time += ", " + time_delta.months + " months"
+            time += ", " + str(time_delta.months) + " months"
 
     if time_delta.days != 0:
         if time == "":
-            time = time_delta.days + " days"
+            time = str(time_delta.days) + " days"
         else:
-            time += ", " + time_delta.days + " days"
+            time += ", " + str(time_delta.days) + " days"
 
     if time_delta.hours != 0:
         if time == "":
-            time = time_delta.hours + " hours"
+            time = str(time_delta.hours) + " hours"
         else:
-            time += ", " + time_delta.hours + " hours"
+            time += ", " + str(time_delta.hours) + " hours"
 
     if time_delta.minutes != 0:
         if time == "":
-            time = time_delta.minutes + " minutes"
+            time = str(time_delta.minutes) + " minutes"
         else:
-            time += ", " + time_delta.minutes + " minutes"
+            time += ", " + str(time_delta.minutes) + " minutes"
 
     if time_delta.seconds != 0:
         if time == "":
-            time = time_delta.seconds + " seconds"
+            time = str(time_delta.seconds) + " seconds"
         else:
-            time += ", " + time_delta.seconds + " seconds"
+            time += ", " + str(time_delta.seconds) + " seconds"
 
     result['API Uptime'] = time
 
+    # AVERAGE DATABASE ACCESS TIME
     sum = 0
     for i in range(0, len(db_access_times)):
         sum += db_access_times[i]
 
     result['Average database access time'] = sum / len(db_access_times)
+    
+    # NUMBER OF API REQUESTS RECEIVED
+    result['Number of api requests received'] = number_requests_received
+    
     return result
+
+
+def increment_number_requests_received():
+    global number_requests_received
+    number_requests_received += 1
 
 
 # Request handling
@@ -597,6 +613,8 @@ def get_monitoring_package():
 # These are called when a request for the path they serve is received
 class NumberOfCarsParked(Resource):
     def get(self): # Flask maps the type of http request to the defined methods in each class, in this case GET
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -612,6 +630,8 @@ class NumberOfCarsParked(Resource):
 
 class NumberOfEntriesInTheLastHour(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -627,6 +647,8 @@ class NumberOfEntriesInTheLastHour(Resource):
 
 class NumberOfExitsInTheLastHour(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -642,6 +664,8 @@ class NumberOfExitsInTheLastHour(Resource):
 
 class NumberOfEntriesToday(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_number_of_entries_today())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -649,6 +673,8 @@ class NumberOfEntriesToday(Resource):
 
 class NumberOfExitsToday(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_number_of_exits_today())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -656,6 +682,8 @@ class NumberOfExitsToday(Resource):
 
 class NumberOfSpaces(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(raspbpi.get_num_spaces())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -663,6 +691,8 @@ class NumberOfSpaces(Resource):
 
 class NumberOfFreeSpaces(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -678,6 +708,8 @@ class NumberOfFreeSpaces(Resource):
 
 class AverageNumberOfCarsParkedToday(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(calculate_average_number_cars_parked_today())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -685,6 +717,8 @@ class AverageNumberOfCarsParkedToday(Resource):
 
 class AverageNumberOfFreeSpacesToday(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(raspbpi.get_num_spaces() - calculate_average_number_cars_parked_today())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -692,6 +726,8 @@ class AverageNumberOfFreeSpacesToday(Resource):
 
 class NumberOfCarsParkedTodayHourly(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_number_cars_by_hour())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -699,6 +735,8 @@ class NumberOfCarsParkedTodayHourly(Resource):
 
 class BusiestHoursToday(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_busiest_hours_today())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -706,6 +744,8 @@ class BusiestHoursToday(Resource):
 
 class ActivityLog(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_activity_log())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -713,6 +753,8 @@ class ActivityLog(Resource):
 
 class MainDataPackage(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = jsonify(get_main_data_package())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -720,6 +762,9 @@ class MainDataPackage(Resource):
 
 class SystemMonitoringPackage(Resource):
     def get(self):
+        increment_number_requests_received()
+        
+        response = get_monitoring_package()
         response = jsonify(get_monitoring_package())
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -727,6 +772,8 @@ class SystemMonitoringPackage(Resource):
 
 class Last24HoursHistory(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -741,6 +788,8 @@ class Last24HoursHistory(Resource):
 
 class AllTimeHistory(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         # Measure the time it took to access the database and store it to calculate the average later
         db_access_starting_time = datetime.datetime.now()
 
@@ -755,6 +804,8 @@ class AllTimeHistory(Resource):
 
 class ApiHelp(Resource):
     def get(self):
+        increment_number_requests_received()
+        
         response = {"Available API paths": [{"Number of cars parked": "/number_of_cars_parked"},
                                             {"Number of cars parked today at each hour": "/number_of_cars_parked_today_hourly"},
                                             {"Number of entries in the last hour": "/number_of_entries_in_the_last_hour"},
@@ -797,8 +848,3 @@ api.add_resource(AllTimeHistory, '/all_time_history')
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port='25000', threaded=True)
-    global api_starting_time
-    global db_access_times
-    api_starting_time = datetime.datetime.now()
-    db_access_times = []
-
