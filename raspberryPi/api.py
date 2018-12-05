@@ -156,10 +156,11 @@ def get_busiest_hours_today():
     # find the highest number of cars parked at any hour
     max_cars = max(spaces)
 
-    for i in range(0, len(spaces)):
-        if spaces[i] == max_cars:
-            # if this hour's number of cars parked equals the max then add it as one of the busiest
-            busiest_hours.append(i)
+    if max_cars != 0:
+        for i in range(0, len(spaces)):
+            if spaces[i] == max_cars:
+                # if this hour's number of cars parked equals the max then add it as one of the busiest
+                busiest_hours.append(i)
 
     return busiest_hours
 
@@ -262,7 +263,9 @@ def get_event_string(entry_datetime):
 # Returns all the data suitable for use in a dashboard with only one request
 # Tries to minimize the time spent accessing the database to allow for realtime updates
 def get_main_data_package():
-
+    # used to make deep copies of data from the database to avoid accessing it more than once
+    import copy
+    
     # result that will be returned
     result = {}
 
@@ -282,7 +285,7 @@ def get_main_data_package():
 
     # NUMBER OF ENTRIES TODAY
     # get only today's entries
-    last24hlog = last24hlog_original
+    last24hlog = copy.deepcopy(last24hlog_original) #make a copy of the data from the database to reuse it below
     for i in range(len(last24hlog['entries']) - 1, -1, -1):
         if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
             last24hlog['entries'].pop(i)
@@ -293,7 +296,7 @@ def get_main_data_package():
     # NUMBER OF EXITS TODAY
     # Returns the number of exits today until now
     # get only today's exits
-    last24hlog = last24hlog_original
+    last24hlog = copy.deepcopy(last24hlog_original)
     for i in range(len(last24hlog['exits']) - 1, -1, -1):
         if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
             last24hlog['exits'].pop(i)
@@ -303,7 +306,7 @@ def get_main_data_package():
 
     # NUMBER OF CARS PARKED TODAY AT EACH HOUR
     # get full last 24 hours log
-    last24hlog = last24hlog_original
+    last24hlog = copy.deepcopy(last24hlog_original)
 
     # get only today's log
     for i in range(len(last24hlog['entries']) - 1, -1, -1):
@@ -397,10 +400,11 @@ def get_main_data_package():
     # find the highest number of cars parked at any hour
     max_cars = max(spaces)
 
-    for i in range(0, len(spaces)):
-        if spaces[i] == max_cars:
-            # if this hour's number of cars parked equals the max then add it as one of the busiest
-            busiest_hours.append(i)
+    if max_cars != 0:
+        for i in range(0, len(spaces)):
+            if spaces[i] == max_cars:
+                # if this hour's number of cars parked equals the max then add it as one of the busiest
+                busiest_hours.append(i)
 
     result["Busiest hours today"] = busiest_hours
             
@@ -427,17 +431,7 @@ def get_main_data_package():
 
     # ACTIVITY LOG
     # get full last 24 hours log
-    last24hlog = last24hlog_original
-
-    # get only today's entries
-    for i in range(len(last24hlog['entries']) - 1, -1, -1):
-        if int(last24hlog['entries'][i]['date'].split('-')[2]) != datetime.date.today().day:
-            last24hlog['entries'].pop(i)
-
-    # get only today's exits
-    for i in range(len(last24hlog['exits']) - 1, -1, -1):
-        if int(last24hlog['exits'][i]['date'].split('-')[2]) != datetime.date.today().day:
-            last24hlog['exits'].pop(i)
+    last24hlog = copy.deepcopy(last24hlog_original)
 
     # declare variables
     events = []
