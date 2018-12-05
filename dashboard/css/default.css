@@ -12,3 +12,13 @@ body {
 #bar-chartcanvas {
   max-height: 430px !important;
 }
+
+.card-primary{
+  background-color: darkgrey;
+  border-color: darkgrey;
+}
+
+.api-text{
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
