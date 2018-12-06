@@ -23,8 +23,8 @@ function getMonitoringPackage() {
     },
     error: function (data) {
       console.log(data);
-      setOffline('database_color', 'Offline');
-      setOffline('api_color', 'Offline');
+      setOffline('database', 'Offline');
+      setOffline('api', 'Offline');
       $('#database_entries').text('---');
       $('#number_of_tables').text('---');
       $('#number_of_tables').text('---');
