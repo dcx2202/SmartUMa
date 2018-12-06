@@ -8,7 +8,7 @@ function getMonitoringPackage() {
       setOnline('database', 'Online');
       setOnline('api', 'Online');
       $('#database_entries').text(data['Number of database entries']);
-      $('#average_database_access_time').text(data['Average database access time'] + "s");
+      $('#average_database_access_time').text(Number(data['Average database access time']).toFixed(3) + "s");
       $('#number_of_tables').text(data['Number of database tables']);
       $('#paths_available').text(data['Number of api endpoints available']);
       $('#api_requests').text(data['Number of api requests received']);
