@@ -27,7 +27,7 @@ function getMonitoringPackage() {
       setOffline('api', 'Offline');
       $('#database_entries').text('---');
       $('#number_of_tables').text('---');
-      $('#number_of_tables').text('---');
+      $('#average_database_access_time').text('---');
       $('#paths_available').text('---');
       $('#api_requests').text('---');
       $('#api_uptime').text('---');
