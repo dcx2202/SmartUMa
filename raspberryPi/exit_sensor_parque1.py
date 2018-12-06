@@ -39,10 +39,10 @@ def simulate():
         response = client.receive_message()
 
         if int(response) > 0:
-            # Send exit signal to server
-			# Saida do parque coberto = entrada no parque exterior
+            # Send exit signal to server ("-2" - saida do parque coberto)
+	    # Saida do parque coberto = entrada no parque exterior
             client.send_message_to_server("-2")
-            print("{} - exit sensor sent a signal".format(curr_date))
+            print("{} - exit sensor from P1 sent a signal".format(curr_date))
 
     set_timeout(1, simulate)  # Simulate again 1 second from now
 
