@@ -37,12 +37,14 @@ function getMonitoringPackage() {
 }
 
 function setOnline(name_of_square, text) {
+  $('#' + name_of_square + '_color').removeClass('card-red');
   $('#' + name_of_square + '_color').addClass('card-green');
   $('#' + name_of_square + '_state').text(text);
 }
 
 function setOffline(name_of_square, text) {
   $('#' + name_of_square + '_color').addClass('card-red');
+  $('#' + name_of_square + '_color').removeClass('card-green');
   $('#' + name_of_square + '_state').text(text);
 }
 
