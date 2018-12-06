@@ -47,7 +47,7 @@ def process_socket_message(data, client):
         elif data == 2 and raspbpi.get_num_cars() > 0:
             raspbi.new_exit(data/2)
             print("{} - a car entered P1".format(curr_date))
-        elif data == -2:
+        elif data == -2:  # Assumindo que quem sai do parque coberto, nao vai usar o parque exterior
             print("{} - a car exited P1".format(curr_date))
 
     except:     # Received a text message (sensor connected, ...)
