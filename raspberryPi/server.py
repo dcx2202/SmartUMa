@@ -44,6 +44,11 @@ def process_socket_message(data, client):
         elif data == -1 and raspbpi.get_num_cars() > 0:  # If cars exited then update the number of exits
             raspbpi.new_exit(-1 * data)
             print("{} - a car exited".format(curr_date))
+        elif data == 2 and raspbpi.get_num_cars() > 0:
+            raspbi.new_exit(data/2)
+            print("{} - a car entered P1".format(curr_date))
+        elif data == -2:
+            print("{} - a car exited P1".format(curr_date))
 
     except:     # Received a text message (sensor connected, ...)
         # Do something with this
