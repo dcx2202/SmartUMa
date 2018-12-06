@@ -7,9 +7,10 @@ curr_date = Date.datetime.now()
 
 
 # [Prob. Entering 00:00 -> 01:00, 01:00 -> 02:00, ...]
-probs = [0, 0, 0, 0, 0, 0.05, 0.1, 0.4,
-         2.5, 1, 0.3, 0.3, 0.25, 1.7, 0.7, 0.4,
-         0.3, 0.15, 0.1, 0.1, 0.05, 0.05, 0, 0]
+# Probabilidade de entrar no parque coberto é 1/10 das outras 
+probs = [0, 0, 0, 0, 0, 0, 0.01, 0.04,
+         0.25, 0.1, 0.03, 0.03, 0.02, 0.17, 0.07, 0.04,
+         0.03, 0.02, 0.01, 0.01, 0.01, 0, 0, 0]
 
 
 def main():
@@ -31,9 +32,9 @@ def simulate():
 
     # A car has entered
     if random.uniform(0, 100) < probs[curr_date.hour]:
-        # Send entry signal to server ("1" - 1 car entered)
+        # Send entry signal to server ("2" - 1 car entered the interior park)
         # Entrada no parque coberto = saida do parque exterior
-        client.send_message_to_server("-1")
+        client.send_message_to_server("2")
         print("{} - entry sensor sent a signal".format(curr_date))
 
     set_timeout(1, simulate)    # Simulate again 1 second from now
