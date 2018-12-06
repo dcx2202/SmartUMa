@@ -149,8 +149,14 @@ function updateGraph(data_array) {
 
 function checkLogin() {
   var isLoggedOn = localStorage.getItem('isLoggedOn');
+  var mail_split = localStorage.getItem('mail').split('@');
+
   if (isLoggedOn == 'false') {
     window.location.replace('index.html');
+  }
+
+  if (mail_split[1] != 'admin.uma.pt'){
+    $('#admin_tab').hide();
   }
 
   $('#username').text(localStorage.getItem('user'));
@@ -180,7 +186,7 @@ function loginFunction() {
     erro = true;
   else if (mail_split[0] == '' || mail_split[1] == '')
     erro = true;
-  else if (mail_split[1] != 'student.uma.pt')
+  else if (mail_split[1] != 'student.uma.pt' && mail_split[1] != 'admin.uma.pt')
     erro = true;
 
   if (erro) {

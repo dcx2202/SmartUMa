@@ -1,9 +1,3 @@
-function monitoring() {
-  setGray('database');
-  setGray('api');
-  getMonitoringPackage();
-}
-
 function getMonitoringPackage() {
   $.ajax({
     type: "get",
@@ -100,4 +94,29 @@ function sendAjaxRequest(path) {
   });
 }
 
+function checkLogin() {
+  var isLoggedOn = localStorage.getItem('isLoggedOn');
+  var mail_split = localStorage.getItem('mail').split('@');
+
+  if (isLoggedOn == 'false' || mail_split[1] != 'admin.uma.pt') {
+    window.location.replace('index.html');
+  }
+
+  $('#username').text(localStorage.getItem('user'));
+}
+
+function logout() {
+  window.alert("You have logged out!");
+  localStorage.setItem('isLoggedOn', false);
+  window.location.replace('index.html');
+}
+
+function monitoring() {
+  checkLogin();
+  setGray('database');
+  setGray('api');
+  getMonitoringPackage();
+}
+
+//update periodically
 setInterval(getMonitoringPackage, 10000);
