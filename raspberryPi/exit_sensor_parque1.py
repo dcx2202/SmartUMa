@@ -7,9 +7,10 @@ curr_date = Date.datetime.now()
 
 
 # [Prob. Exiting 00:00 -> 01:00, 01:00 -> 02:00, ...]
-probs = [0.1, 0.1, 0, 0, 0, 0, 0.1, 0.1,
-         0.1, 0.1, 0.1, 0.1, 1.2, 0.5, 0.8,
-         1, 1, 1, 0.5, 0.5, 2.5, 1, 0.2, 0.1]
+# Probabilidade de sair do parque coberto é 1/10 das outras 
+probs = [0.01, 0.01, 0, 0, 0, 0, 0.01, 0.01,
+         0.01, 0.01, 0.01, 0.01, 0.12, 0.05, 0.08,
+         0.1, 0.1, 0.1, 0.05, 0.05, 0.25, 0.1, 0.02, 0.01]
 
 
 def main():
@@ -40,7 +41,7 @@ def simulate():
         if int(response) > 0:
             # Send exit signal to server
 			# Saida do parque coberto = entrada no parque exterior
-            client.send_message_to_server("-1")
+            client.send_message_to_server("-2")
             print("{} - exit sensor sent a signal".format(curr_date))
 
     set_timeout(1, simulate)  # Simulate again 1 second from now
