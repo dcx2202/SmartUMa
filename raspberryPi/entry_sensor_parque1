@@ -32,7 +32,8 @@ def simulate():
     # A car has entered
     if random.uniform(0, 100) < probs[curr_date.hour]:
         # Send entry signal to server ("1" - 1 car entered)
-        client.send_message_to_server("1")
+        # Entrada no parque coberto = saida do parque exterior
+        client.send_message_to_server("-1")
         print("{} - entry sensor sent a signal".format(curr_date))
 
     set_timeout(1, simulate)    # Simulate again 1 second from now
