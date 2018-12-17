@@ -16,6 +16,7 @@ We'll be implementing fail safe measures regarding the database and security mea
 
 ## Dashboard
 ### http://smartumaparking.x10host.com/
+To login onto the dashboard, use an email with the format XXXXX@student.uma.pt and any given password.
 ![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/dashboard.png)
 The dashboard displays the most important information at the top.
 Below that there is a graph displaying the number of cars that were parked at each hour today.
