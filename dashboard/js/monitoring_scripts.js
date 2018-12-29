@@ -2,7 +2,7 @@ function getMonitoringPackage() {
   $.ajax({
     type: "get",
     url: 'http://84.23.208.186:25000/system_monitoring_package',
-    timeout: 7000,
+    timeout: 10000,
     success: function (data) {
       console.log(data);
       setOnline('database', 'Online');
