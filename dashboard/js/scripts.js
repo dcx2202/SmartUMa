@@ -2,13 +2,83 @@
 //requests nao acumularem caso um deles demore a executar
 
 var timeout_timer = 1000;
-var source_url = 'http://84.23.208.186:25000';
+var our_api_url = 'http://84.23.208.186:25000';
+var group_1_api_url = 'http://10.2.233.141:8000/api/weather/1/';
+var group_2_api_url = '';
+var group_3_api_url = 'https://smartrooms.ddns.net/api/rooms/occupation';
+var group_5_api_url = 'https://jpborges.pt/smartuma/api/sensors/15/measures';
 
+
+function getStudyRoomsOccupationData() {
+  $.ajax({
+    type: "get",
+    url: group_3_api_url,
+    success: function (data) {
+      //console.log the response
+      console.log(data);
+      updateStudyRoomsFields(data);
+      setTimeout(function () {
+        getStudyRoomsOccupationData();
+      }, 5000);
+    },
+    error: function () {
+      console.log('error');
+      updateStudyRoomsFields('failed');
+      setTimeout(function () {
+        getStudyRoomsOccupationData();
+      }, 5000);
+    }
+  });
+}
+
+function getOutsideWeatherData() {
+  $.ajax({
+    type: "get",
+    url: group_1_api_url,
+    success: function (data) {
+      //console.log the response
+      console.log(data);
+      updateWeatherFields(data);
+      setTimeout(function () {
+        getOutsideWeatherData();
+      }, 5000);
+    },
+    error: function () {
+      console.log('error');
+      updateWeatherFields('failed');
+      setTimeout(function () {
+        getOutsideWeatherData();
+      }, 5000);
+    }
+  });
+}
+
+function getNucleoTemperatureData() {
+  $.ajax({
+    type: "get",
+    url: group_5_api_url,
+    success: function (data) {
+      //console.log the response
+      console.log(data);
+      updateTemperatureFields(data);
+      setTimeout(function () {
+        getNucleoTemperatureData();
+      }, 5000);
+    },
+    error: function () {
+      console.log('error');
+      updateTemperatureFields('failed');
+      setTimeout(function () {
+        getNucleoTemperatureData();
+      }, 5000);
+    }
+  });
+}
 
 function getMainPackage() {
   $.ajax({
     type: "get",
-    url: source_url + "/main_data_package",
+    url: our_api_url + "/main_data_package",
     success: function (data) {
       //console.log the response
       console.log(data);
@@ -18,35 +88,81 @@ function getMainPackage() {
       }, timeout_timer);
     },
     error: function () {
+      console.log('error');
+      updateFields('failed');
       setTimeout(function () {
-        console.log('error');
         getMainPackage();
       }, timeout_timer);
     }
   });
 }
 
+function updateStudyRoomsFields(result) {
+  if (result == 'failed') {
+    $('#studyroom_piso_0').text('Piso 0: ---');
+    $('#studyroom_piso_1').text('Piso 1: ---');
+    $('#studyroom_piso_2').text('Piso 2: ---');
+    $('#studyroom_piso_3').text('Piso 3: ---');
+  }
+  else {
+    $('#studyroom_piso_0').text('Piso 0: ' + result[0]['empty_seats']);
+    $('#studyroom_piso_1').text('Piso 1: ' + result[1]['empty_seats']);
+    $('#studyroom_piso_2').text('Piso 2: ' + result[2]['empty_seats']);
+    $('#studyroom_piso_3').text('Piso 3: ' + result[3]['empty_seats']);
+  }
+}
+
+function updateWeatherFields(result) {
+  if (result == 'failed') {
+    $('#temp_piso_0').text('Piso 0: ---');
+    $('#temp_piso_1').text('Piso 1: ---');
+    $('#temp_piso_2').text('Piso 2: ---');
+    $('#temp_piso_3').text('Piso 3: ---');
+  }
+  else {
+    //update the fields
+    /*$('#temp_piso_0').text('Piso 0: ' + result[0]['empty_seats']);
+    $('#temp_piso_1').text('Piso 1: ' + result[1]['empty_seats']);
+    $('#temp_piso_2').text('Piso 2: ' + result[2]['empty_seats']);
+    $('#temp_piso_3').text('Piso 3: ' + result[3]['empty_seats']);*/
+  }
+}
+
+function updateTemperatureFields(result) {
+  if (result == 'failed') {
+    $('#nucleo_informatica_temp').text('--- ºC');
+  }
+  else {
+    $('#nucleo_informatica_temp').text(result['data']['0']['value'] + " ºC");
+  }
+}
+
 function updateFields(data) {
-  var text = "";
-  data['Busiest hours today'].forEach(element => {
-    text += element + "h" + " ";
-  });
+  if (data == 'failed') {
+    window.alert('Failed to retrieve parking lot data!');
+  }
+  else {
+    var text = "";
+    data['Busiest hours today'].forEach(element => {
+      text += element + "h" + " ";
+    });
 
-  $('#busiest_hours_today').text(text);
-  $('#number_of_cars_parked').text(data['Number of cars parked']);
-  $('#number_of_free_spaces').text(data['Number of free spaces']);
-  $('#number_of_entries_last_hour').text(data['Number of entries in the last hour']);
-  $('#number_of_entries_last_hour_2').text(data['Number of entries in the last hour']);
-  $('#number_of_exits_last_hour').text(data['Number of exits in the last hour']);
-  $('#number_of_exits_last_hour_2').text(data['Number of exits in the last hour']);
-  $('#number_of_spaces').text(data['Number of spaces']);
-  $('#total_entries_today').text(data['Number of entries today']);
-  $('#total_exits_today').text(data['Number of exits today']);
-  $('#average_free_spaces_today').text(data['Average number of free spaces today']);
-  $('#average_parked_cars_today').text(data['Average number of cars parked today']);
+    $('#busiest_hours_today').text(text);
+    $('#number_of_cars_parked').text(data['Number of cars parked']);
+    $('#number_of_free_spaces').text(data['Number of free spaces']);
+    $('#number_of_entries_last_hour').text(data['Number of entries in the last hour']);
+    $('#number_of_entries_last_hour_2').text(data['Number of entries in the last hour']);
+    $('#number_of_exits_last_hour').text(data['Number of exits in the last hour']);
+    $('#number_of_exits_last_hour_2').text(data['Number of exits in the last hour']);
+    $('#number_of_spaces').text(data['Number of spaces']);
+    $('#total_entries_today').text(data['Number of entries today']);
+    $('#total_exits_today').text(data['Number of exits today']);
+    $('#average_free_spaces_today').text(data['Average number of free spaces today']);
+    $('#average_parked_cars_today').text(data['Average number of cars parked today']);
 
-  updateActivityLog(data);
-  updateGraph(data['Number of cars parked today hourly']);
+    updateActivityLog(data);
+    updateGraph(data['Number of cars parked today hourly']);
+  }
 }
 
 function updateActivityLog(data) {
@@ -155,7 +271,7 @@ function checkLogin() {
     window.location.replace('index.html');
   }
 
-  if (mail_split[1] != 'admin.uma.pt'){
+  if (mail_split[1] != 'admin.uma.pt') {
     $('#admin_tab').hide();
   }
 
@@ -217,6 +333,9 @@ function dashboard() {
   checkLogin();
   drawGraph(); //draws a graph with placeholder values
   getMainPackage();
+  getStudyRoomsOccupationData();
+  getOutsideWeatherData();
+  getNucleoTemperatureData();
 }
 
 function index() {

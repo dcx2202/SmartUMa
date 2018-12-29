@@ -1,5 +1,6 @@
 body {
-  margin-top: 50px !important; 
+  margin-top: 50px !important;
+  background-color: #fff;
 }
 
 .chart-container {
@@ -18,6 +19,14 @@ body {
   border-color: darkgrey;
 }
 
+.card-green{
+  border-color: #5cb85c !important;
+}
+
+.card-red{
+  border-color: #d9534f !important;
+}
+
 .api-text{
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -26,4 +35,8 @@ body {
 .card-blue {
   background-color: #0275d8;
   border-color: #0275d8;
+}
+
+.label-info {
+  margin-left: 5px;
 }

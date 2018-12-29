@@ -82,7 +82,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card-footer card-default">
+              <div class="card-footer">
                 <a>
                   <span class="pull-xs-left">N° of cars parked</span>
                   <span class="pull-xs-right"></span>
@@ -104,7 +104,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card-footer card-yellow">
+              <div class="card-footer">
                 <a>
                   <span class="pull-xs-left">Nº of free spaces</span>
                   <span class="pull-xs-right"></span>
@@ -126,7 +126,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card-footer card-green">
+              <div class="card-footer">
                 <a>
                   <span class="pull-xs-left">N° of entries in the last hour</span>
                   <span class="pull-xs-right"></span>
@@ -148,7 +148,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card-footer card-red">
+              <div class="card-footer">
                 <a>
                   <span class="pull-xs-left">N° of exits in the last hour</span>
                   <span class="pull-xs-right"></span>
@@ -161,7 +161,7 @@
         <!-- /.row -->
 
         <div class="row">
-          <div class="col-lg-9">
+          <div class="col-lg-6">
             <div class="card">
               <div class="card-header card-default">
                 <i class="fa fa-bar-chart-o fa-fw"></i> Park utilization
@@ -171,14 +171,28 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-6">
             <div class="card">
               <div class="card-header card-default">
-                <i class="fa fa-bar-chart-o fa-fw"></i> Other groups
+                <i class="fa fa-pagelines fa-fw"></i> Other groups
               </div>
               <div class="card-block">
-                <div id="outro-grupo-chart">
-                  other groups here
+                <div class="list-group">
+                  <a class="list-group-item">
+                    <span class="label label-pill label-info pull-xs-right" id='studyroom_piso_3'>Piso 3: ---</span>
+                    <span class="label label-pill label-info pull-xs-right" id='studyroom_piso_2'>Piso 2: ---</span>
+                    <span class="label label-pill label-info pull-xs-right" id='studyroom_piso_1'>Piso 1: ---</span>
+                    <span class="label label-pill label-info pull-xs-right" id='studyroom_piso_0'>Piso 0: ---</span>
+                    <i class="fa fa-fw fa-info-circle"></i> <span id='group_3'>Study Rooms Free Seats</span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-info pull-xs-right" id='nucleo_informatica_temp'> --- ºC </span>
+                    <i class="fa fa-fw fa-info-circle"></i> <span id='group_5'> Núcleo Informática Temperature </span>
+                  </a>
+                  <a class="list-group-item">
+                    <span class="label label-pill label-info pull-xs-right" id='outside_temp'> --- ºC </span>
+                    <i class="fa fa-fw fa-info-circle"></i> <span id='group_1'> Outside Temperature </span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -196,35 +210,35 @@
                 <div class="list-group">
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_1'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_1'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_1'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_2'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_2'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_2'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_3'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_3'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_3'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_4'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_4'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_4'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_5'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_5'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_5'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_6'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_6'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_6'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_7'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_7'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_7'> --- </span>
                   </a>
                   <a class="list-group-item">
                     <span class="label label-pill label-default pull-xs-right" id='time_8'>----------</span>
-                    <i class="fa fa-fw fa-comment"></i> <span id='activity_8'> --- </span>
+                    <i class="fa fa-fw fa-arrow-circle-o-right"></i> <span id='activity_8'> --- </span>
                   </a>
                 </div>
               </div>
@@ -233,7 +247,7 @@
           <div class="col-lg-6 col-sm-12">
             <div class="card card-default">
               <div class="card-header card-default">
-                <i class="fa fa-clock-o fa-fw"></i> Statistics
+                <i class="fa fa-list-alt fa-fw"></i> Statistics
               </div>
               <div class="card-block">
                 <div class="list-group">
