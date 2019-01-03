@@ -17,6 +17,7 @@ We'll be implementing fail safe measures regarding the database and security mea
 ## Dashboard
 ### http://smartumaparking.x10host.com/
 To login onto the dashboard, use an email with the format XXXXX@student.uma.pt and any given password.
+To get access to the dashboard and the monitoring page use an email with the format XXXXX@admin.uma.pt and any given password.
 ![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/dashboard.png)
 The dashboard displays the most important information at the top.
 Below that there is a graph displaying the number of cars that were parked at each hour today.
@@ -28,6 +29,19 @@ An API serves data related to the parking lot. This data is used by the dashboar
 It is possible to get the number of cars parked, the number of free spaces, statistics and many more. For a complete list and paths to get this data please visit:
 
 ### http://84.23.208.186:25000/api_help
+
+### Available API paths
+![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/available_api_paths.png)
+
+Example of API endpoint response
+![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/api_response.png)
+
+# System Monitoring Page
+### Systems Online
+![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/monitoring_success.png)
+
+### Systems Offline
+![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/monitoring_failure.png)
 
 
 ## Architectural Model
