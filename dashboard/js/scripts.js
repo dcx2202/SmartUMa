@@ -157,7 +157,12 @@ function updateNoiseFields(result) {
     $('#nucleo_informatica_noise').text('--- dB');
   }
   else {
-    $('#nucleo_informatica_noise').text(result[0]['value'] + " ºdB");
+    try {
+      $('#nucleo_informatica_noise').text(result[0]['value'] + " ºdB");
+    }
+    catch (err) {
+      console.log('error');
+    }
   }
 }
 
