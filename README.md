@@ -33,7 +33,7 @@ It is possible to get the number of cars parked, the number of free spaces, stat
 ### Available API paths
 ![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/available_api_paths.png)
 
-Example of API endpoint response
+### Example of API endpoint response
 ![alt text](https://github.com/dcx2202/SmartUMa/blob/master/readme_images/api_response.png)
 
 # System Monitoring Page
