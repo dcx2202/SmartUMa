@@ -305,6 +305,11 @@ function checkLogin() {
 function checkRemember() {
   var checked_remember = localStorage.getItem('checked');
   var mail = localStorage.getItem('mail');
+  var isLoggedOn = localStorage.getItem('isLoggedOn');
+
+  if (isLoggedOn == 'true') {
+    window.location.replace('dashboard.html');
+  }
 
   //console.log(checked_lembrar);
   if (checked_remember === 'true') {
