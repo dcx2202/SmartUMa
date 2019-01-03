@@ -4,7 +4,7 @@
 var timeout_timer = 1000;
 var our_api_url = 'http://84.23.208.186:25000';
 var group_1_api_url = 'http://10.2.233.141:8000/api/weather/1/';
-var group_2_api_url = '';
+var group_2_api_url = 'http://checkstudynoise.ddns.net/wp-json/sound/nucleo-informatica-2';
 var group_3_api_url = 'https://smartrooms.ddns.net/api/rooms/occupation';
 var group_5_api_url = 'https://jpborges.pt/smartuma/api/sensors/15/measures';
 
@@ -75,6 +75,28 @@ function getNucleoTemperatureData() {
   });
 }
 
+function getNucleoNoiseData() {
+  $.ajax({
+    type: "get",
+    url: group_2_api_url,
+    success: function (data) {
+      //console.log the response
+      console.log(data);
+      updateNoiseFields(data);
+      setTimeout(function () {
+        getNucleoNoiseData();
+      }, 5000);
+    },
+    error: function () {
+      console.log('error');
+      updateNoiseFields('failed');
+      setTimeout(function () {
+        getNucleoNoiseData();
+      }, 5000);
+    }
+  });
+}
+
 function getMainPackage() {
   $.ajax({
     type: "get",
@@ -114,17 +136,10 @@ function updateStudyRoomsFields(result) {
 
 function updateWeatherFields(result) {
   if (result == 'failed') {
-    $('#temp_piso_0').text('Piso 0: ---');
-    $('#temp_piso_1').text('Piso 1: ---');
-    $('#temp_piso_2').text('Piso 2: ---');
-    $('#temp_piso_3').text('Piso 3: ---');
+    $('#outside_temp').text('--- ºC');
   }
   else {
-    //update the fields
-    /*$('#temp_piso_0').text('Piso 0: ' + result[0]['empty_seats']);
-    $('#temp_piso_1').text('Piso 1: ' + result[1]['empty_seats']);
-    $('#temp_piso_2').text('Piso 2: ' + result[2]['empty_seats']);
-    $('#temp_piso_3').text('Piso 3: ' + result[3]['empty_seats']);*/
+    $('#outside_temp').text(result[0] + " ºC");
   }
 }
 
@@ -134,6 +149,15 @@ function updateTemperatureFields(result) {
   }
   else {
     $('#nucleo_informatica_temp').text(result['data']['0']['value'] + " ºC");
+  }
+}
+
+function updateNoiseFields(result) {
+  if (result == 'failed') {
+    $('#nucleo_informatica_noise').text('--- dB');
+  }
+  else {
+    $('#nucleo_informatica_noise').text(result[0]['value'] + " ºdB");
   }
 }
 
@@ -336,6 +360,7 @@ function dashboard() {
   getStudyRoomsOccupationData();
   getOutsideWeatherData();
   getNucleoTemperatureData();
+  getNucleoNoiseData();
 }
 
 function index() {
