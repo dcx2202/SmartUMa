@@ -289,17 +289,15 @@ function updateGraph(data_array) {
 
 function checkLogin() {
   var isLoggedOn = localStorage.getItem('isLoggedOn');
-  var mail_split = localStorage.getItem('mail').split('@');
+  var mail = localStorage.getItem('mail');
 
-  if (isLoggedOn == 'false') {
+  if (isLoggedOn == null || isLoggedOn == 'false')
     window.location.replace('index.html');
-  }
 
-  if (mail_split[1] != 'admin.uma.pt') {
+  if (mail != null && mail.split('@')[1] != 'admin.uma.pt')
     $('#admin_tab').hide();
-  }
 
-  $('#username').text(localStorage.getItem('user'));
+  $('#username').text(mail.split('@')[0]);
 }
 
 function checkRemember() {
@@ -311,15 +309,13 @@ function checkRemember() {
     window.location.replace('dashboard.html');
   }
 
-  //console.log(checked_lembrar);
-  if (checked_remember === 'true') {
+  if (checked_remember == 'true') {
     $('#mail').val(mail);
     $('#check_remember').prop('checked', true);
   }
 }
 
 function loginFunction() {
-
   var mail = $('#mail').val().trim();
   var mail_split = mail.split('@');
   var pwd = $('#pwd').val();
@@ -339,16 +335,13 @@ function loginFunction() {
     return;
   }
 
-  if ($('#check_remember').is(":checked")) {
+  if ($('#check_remember').is(":checked"))
     localStorage.setItem('checked', true);
-    localStorage.setItem('mail', mail);
-  }
-  else {
+  else
     localStorage.setItem('checked', false);
-  }
 
   localStorage.setItem('isLoggedOn', true);
-  localStorage.setItem('user', mail_split[0]);
+  localStorage.setItem('mail', mail);
   window.location.replace('dashboard.html');
 }
 

@@ -96,13 +96,15 @@ function sendAjaxRequest(path) {
 
 function checkLogin() {
   var isLoggedOn = localStorage.getItem('isLoggedOn');
-  var mail_split = localStorage.getItem('mail').split('@');
+  var mail = localStorage.getItem('mail');
 
-  if (isLoggedOn == 'false' || mail_split[1] != 'admin.uma.pt') {
+  if (isLoggedOn == null || isLoggedOn == 'false')
     window.location.replace('index.html');
-  }
 
-  $('#username').text(localStorage.getItem('user'));
+  if (mail != null && mail.split('@')[1] != 'admin.uma.pt')
+    $('#admin_tab').hide();
+
+  $('#username').text(mail.split('@')[0]);
 }
 
 function logout() {
